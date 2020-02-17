@@ -6,7 +6,7 @@ public class DetailedItem extends Item {
     private List<Parameter> itemParameters;
     private List<Review> itemReviews;
     private List<String> allPhotos;
-    private double averageScore = 0.0;
+    private double averageScore;
 
     public DetailedItem() { }
 

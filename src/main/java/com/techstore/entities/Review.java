@@ -4,21 +4,21 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 public class Review {
-    private String userID = null;
+    private String userId = null;
     private String userName = null;
     private String description = null;
     private int rating = 0;
     private LocalDateTime datetime = null;
-    private String itemID = null;
+    private String itemId = null;
 
     public Review() {}
 
     public String getUserID() {
-        return userID;
+        return userId;
     }
 
     public void setUserID(String userID) {
-        this.userID = userID;
+        this.userId = userID;
     }
 
     public String getDescription() {
@@ -46,11 +46,11 @@ public class Review {
     }
 
     public String getItemID() {
-        return itemID;
+        return itemId;
     }
 
     public void setItemID(String itemID) {
-        this.itemID = itemID;
+        this.itemId = itemID;
     }
 
     public String getUserName() {

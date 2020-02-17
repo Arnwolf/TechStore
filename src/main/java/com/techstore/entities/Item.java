@@ -5,15 +5,15 @@ import java.math.BigInteger;
 
 public class Item {
     private String id;
-    private String manufacturer  = null;
-    private String name  = null;
-    private BigDecimal price = null;
-    private String category  = null;
-    private String mainPhoto = null;
-    private BigDecimal discount = null;
-    private String categoryId = null;
-    private int availability = 0;
-    private boolean newItem = false;
+    private String manufacturer;
+    private String name;
+    private BigDecimal price;
+    private String category;
+    private String mainPhoto;
+    private BigDecimal discount;
+    private String categoryId;
+    private int availability;
+    private boolean newItem;
 
     public void setId(final String id) { this.id = id; }
     public void setManufacturer(String manufacturer) {
@@ -73,24 +73,6 @@ public class Item {
     }
     public boolean getNewItem() {
         return newItem;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null)
-            return false;
-
-
-        BigDecimal d = new BigDecimal(1.0);
-        d.multiply(new BigDecimal(2));
-
-        if (obj != this)
-            return false;
-
-        if (obj.getClass() != Item.class)
-            return false;
-
-        return ((Item) obj).getId().equals(id);
     }
 
     @Override

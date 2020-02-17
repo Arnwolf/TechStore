@@ -1,80 +1,80 @@
 package com.techstore.entities;
 
 public class User {
-    private String ID;
-    private String HashedID;
-    private String Name;
-    private String Email;
-    private String Pass;
-    private String PhoneNumber;
-    private String City;
-    private String Street;
+    private String id;
+    private String hashedId;
+    private String name;
+    private String email;
+    private String pass;
+    private String phoneNumber;
+    private String city;
+    private String street;
     private boolean subscribed;
 
     public User() {}
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     public String getPass() {
-        return Pass;
+        return pass;
     }
 
     public void setPass(String pass) {
-        Pass = pass;
+        this.pass = pass;
     }
 
     public String getPhoneNumber() {
-        return PhoneNumber;
+        return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        PhoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getCity() {
-        return City;
+        return city;
     }
 
     public void setCity(String city) {
-        City = city;
+        this.city = city;
     }
 
     public String getStreet() {
-        return Street;
+        return street;
     }
 
     public void setStreet(String street) {
-        Street = street;
+        this.street = street;
     }
 
     public String getID() {
-        return ID;
+        return id;
     }
 
-    public void setID(String ID) {
-        this.ID = ID;
+    public void setID(String id) {
+        this.id = id;
     }
 
     public String getHashedID() {
-        return HashedID;
+        return hashedId;
     }
 
-    public void setHashedID(String hashedID) {
-        HashedID = hashedID;
+    public void setHashedID(String hashedId) {
+        this.hashedId = hashedId;
     }
 
     public boolean isSubscribed() {
