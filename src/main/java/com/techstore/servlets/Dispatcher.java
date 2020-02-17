@@ -62,7 +62,7 @@ public class Dispatcher extends HttpServlet {
     private BaseController getController(HttpServletRequest request) {
         try {
 
-            StringBuilder controllerName;
+            StringBuilder controllerName = null;
 
             if (!request.getRequestURI().equals("/")) {
                 controllerName = new StringBuilder(request.getRequestURI());
@@ -73,11 +73,11 @@ public class Dispatcher extends HttpServlet {
 
                 final String className = controllerName.substring(0, 1).toUpperCase() + controllerName.substring(1);
                 controllerName = new StringBuilder(className);
-            } else
-                controllerName = new StringBuilder("Home");
+            }
 
             Class type = Class.forName(
-                    String.format("com.techstore.controllers.%sController", controllerName));
+                    String.format("com.techstore.controllers.%sController", controllerName == null ?
+                            "Home" : controllerName));
 
             MethodType methodType = MethodType.methodType(void.class);
             MethodHandle methodHandle = MethodHandles.publicLookup().findConstructor(type, methodType);
