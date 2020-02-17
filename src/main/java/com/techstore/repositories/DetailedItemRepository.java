@@ -13,7 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DetailedItemRepository implements Repository<DetailedItem> {
@@ -26,7 +26,7 @@ public class DetailedItemRepository implements Repository<DetailedItem> {
                 photoQuery.execute();
 
                 ResultSet photosResult = photoQuery.getResultSet();
-                List<String> itemPhotos = new LinkedList<>();
+                List<String> itemPhotos = new ArrayList<>();
 
                 while (photosResult.next()) {
                     itemPhotos.add(photosResult.getString("photo"));
@@ -43,7 +43,7 @@ public class DetailedItemRepository implements Repository<DetailedItem> {
             itemParamsQuery.execute();
 
             ResultSet paramsResult = itemParamsQuery.getResultSet();
-            List<Parameter> itemParams = new LinkedList<>();
+            List<Parameter> itemParams = new ArrayList<>();
 
             while (paramsResult.next()) {
                 Parameter parameter = new Parameter();
@@ -88,7 +88,7 @@ public class DetailedItemRepository implements Repository<DetailedItem> {
             reviewQuery.execute();
 
             ResultSet reviewsResult = reviewQuery.getResultSet();
-            List<Review> itemReviews = new LinkedList<>();
+            List<Review> itemReviews = new ArrayList<>();
 
             while (reviewsResult.next()) {
                 Review review = new Review();
@@ -127,7 +127,7 @@ public class DetailedItemRepository implements Repository<DetailedItem> {
             query.execute();
 
             ResultSet result = query.getResultSet();
-            List<DetailedItem> detailedItems = new LinkedList<>();
+            List<DetailedItem> detailedItems = new ArrayList<>();
 
             while (result.next()) {
                 DetailedItem detailedItem = new DetailedItem();

@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepository implements Repository<User> {
@@ -84,7 +84,7 @@ public class UserRepository implements Repository<User> {
 
             ResultSet result = statement.getResultSet();
 
-            List<User> users = new LinkedList<>();
+            List<User> users = new ArrayList<>();
             while (result.next()) {
                 User user = new User();
                 user.setEmail(result.getString("email"));

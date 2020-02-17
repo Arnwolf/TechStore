@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemRepository implements Repository<Item> {
@@ -35,7 +35,7 @@ public class ItemRepository implements Repository<Item> {
             query.execute();
 
             ResultSet result = query.getResultSet();
-            List<Item> items = new LinkedList<>();
+            List<Item> items = new ArrayList<>();
 
             while (result.next()) {
                 Item item = new Item();

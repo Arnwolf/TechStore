@@ -6,7 +6,10 @@ import com.techstore.jdbc.ConnectionPool;
 import com.techstore.specifications.SqlSpecification;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class OrderRepository implements Repository<Order> {
 
@@ -126,7 +129,7 @@ public class OrderRepository implements Repository<Order> {
                     itemsQuery.execute();
 
                     ResultSet itemsResult = itemsQuery.getResultSet();
-                    List<Item> items = new LinkedList<>();
+                    List<Item> items = new ArrayList<>();
                     Map<String, Integer> itemsQuantity = new TreeMap<>();
 
                     while (itemsResult.next()) {

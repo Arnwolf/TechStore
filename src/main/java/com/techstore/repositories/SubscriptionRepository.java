@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SubscriptionRepository implements Repository<String> {
@@ -43,7 +43,7 @@ public class SubscriptionRepository implements Repository<String> {
             query.execute();
 
             ResultSet result = query.getResultSet();
-            List<String> subscriptions = new LinkedList<>();
+            List<String> subscriptions = new ArrayList<>();
 
             while (result.next()) {
                 final String subscription = result.getString("email");

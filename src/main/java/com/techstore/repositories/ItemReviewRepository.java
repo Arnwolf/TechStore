@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemReviewRepository implements Repository<Review> {
@@ -45,7 +45,7 @@ public class ItemReviewRepository implements Repository<Review> {
             query.execute();
 
             ResultSet result = query.getResultSet();
-            List<Review> itemReviews = new LinkedList<>();
+            List<Review> itemReviews = new ArrayList<>();
 
             while (result.next()) {
                 Review review = new Review();

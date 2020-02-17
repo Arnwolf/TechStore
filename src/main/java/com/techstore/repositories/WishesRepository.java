@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class WishesRepository implements Repository<WishedItem> {
@@ -48,7 +48,7 @@ public class WishesRepository implements Repository<WishedItem> {
             query.execute();
 
             ResultSet result = query.getResultSet();
-            List<WishedItem> items = new LinkedList<>();
+            List<WishedItem> items = new ArrayList<>();
 
             while (result.next()) {
                 WishedItem item = new WishedItem();

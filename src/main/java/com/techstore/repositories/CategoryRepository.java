@@ -36,7 +36,7 @@ public class CategoryRepository implements Repository<Category> {
             query.execute();
             ResultSet result = query.getResultSet();
 
-            List<Category> list = new LinkedList<>();
+            List<Category> list = new ArrayList<>();
             while (result.next()) {
                 Category category = new Category();
                 category.setId(result.getString("id"));
