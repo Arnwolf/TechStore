@@ -63,12 +63,6 @@ public class OrdersService {
         newOrder.setTotalAmount(cart.getTotalAmount());
         newOrder.setCreationDate(LocalDateTime.now());
         newOrder.setStatus(OrderStatus.PENDING.status());
-
-//        Map<String, Integer> quantity = new TreeMap<>();
-//
-//        for (Item item : newOrder.getOrderItems())
-//            quantity.put(item.getId(), cart.getQuantity(item.getId()));
-
         newOrder.setItemsQuantity(cart.getCart());
 
         addOrder(newOrder);

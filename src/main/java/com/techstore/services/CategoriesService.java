@@ -105,7 +105,7 @@ public class CategoriesService {
 
         if (!categoryID.isEmpty()) {
             return getSubCategories(categoryID);
-        } else //by name
+        } else
             return new ArrayList<>();
     }
 }

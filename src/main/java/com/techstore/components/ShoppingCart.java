@@ -59,7 +59,7 @@ public class ShoppingCart {
         itemsQuantity.remove(itemId);
     }
 
-    public void removeItem(final String itemId, final int quantity) { //TODO: quantity > cartItemQuantity ?!?
+    public void removeItem(final String itemId, final int quantity) {
         Integer cartItemQuantity = itemsQuantity.get(itemId);
         int reduceQuantity;
 
