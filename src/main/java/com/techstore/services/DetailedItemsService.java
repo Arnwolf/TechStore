@@ -21,11 +21,8 @@ public class DetailedItemsService {
     private Repository<Review> reviewRepository;
     private final static Logger LOG = Logger.getLogger(DetailedItemsService.class.getName());
 
-    private static DetailedItemsService instance;
-
-    public static void init() {
-        instance = new DetailedItemsService(new DetailedItemRepository(), new ItemReviewRepository());
-    }
+    private static DetailedItemsService instance = new DetailedItemsService(
+            new DetailedItemRepository(), new ItemReviewRepository());
 
     public static DetailedItemsService getInstance() {
         return instance;

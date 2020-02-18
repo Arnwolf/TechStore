@@ -19,11 +19,7 @@ public class UsersService {
     private Repository<User> userRepository;
     private final static Logger LOG = Logger.getLogger(UsersService.class.getName());
 
-    private static UsersService instance;
-
-    public static void init() {
-        instance = new UsersService(new UserRepository());
-    }
+    private static UsersService instance = new UsersService(new UserRepository());
 
     public static UsersService getInstance() {
         return instance;

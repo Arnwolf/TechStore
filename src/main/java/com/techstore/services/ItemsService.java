@@ -14,11 +14,7 @@ public class ItemsService {
     private Repository<Item> itemsRepository;
     private final static Logger LOG = Logger.getLogger(ItemsService.class.getName());
 
-    private static ItemsService instance;
-
-    public static void init() {
-        instance = new ItemsService(new ItemRepository());
-    }
+    private static ItemsService instance = new ItemsService(new ItemRepository());
 
     public static ItemsService getInstance() {
         return instance;

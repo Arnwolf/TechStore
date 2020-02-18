@@ -15,11 +15,7 @@ public class UserWishesService {
     private Repository<WishedItem> wishesRepository;
     private final static Logger LOG = Logger.getLogger(UserWishesService.class.getName());
 
-    private static UserWishesService instance;
-
-    public static void init() {
-        instance = new UserWishesService(new WishesRepository());
-    }
+    private static UserWishesService instance = new UserWishesService(new WishesRepository());
 
     public static UserWishesService getInstance() {
         return instance;

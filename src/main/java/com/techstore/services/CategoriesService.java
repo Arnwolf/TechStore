@@ -18,11 +18,7 @@ public class CategoriesService {
     private Repository<Category> categoryRepository;
     private final static Logger LOG = Logger.getLogger(CategoriesService.class.getName());
 
-    private static CategoriesService instance;
-
-    public static void init() {
-        instance = new CategoriesService(new CategoryRepository());
-    }
+    private static CategoriesService instance = new CategoriesService(new CategoryRepository());
 
     public static CategoriesService getInstance() {
         return instance;

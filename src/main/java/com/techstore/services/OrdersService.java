@@ -19,11 +19,7 @@ public class OrdersService {
     private Repository<Order> orderRepository;
     private final static Logger LOG = Logger.getLogger(OrdersService.class.getName());
 
-    private static OrdersService instance;
-
-    public static void init() {
-        instance = new OrdersService(new OrderRepository());
-    }
+    private static OrdersService instance = new OrdersService(new OrderRepository());
 
     public static OrdersService getInstance() {
         return instance;

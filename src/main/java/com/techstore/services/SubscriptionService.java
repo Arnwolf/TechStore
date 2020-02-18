@@ -13,11 +13,7 @@ public class SubscriptionService {
     private Repository<String> subscriptionRepository;
     private final static Logger LOG = Logger.getLogger(SubscriptionService.class.getName());
 
-    private static SubscriptionService instance;
-
-    public static void init() {
-        instance = new SubscriptionService(new SubscriptionRepository());
-    }
+    private static SubscriptionService instance = new SubscriptionService(new SubscriptionRepository());
 
     public static SubscriptionService getInstance() {
         return instance;
