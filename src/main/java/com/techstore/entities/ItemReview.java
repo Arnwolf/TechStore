@@ -3,7 +3,7 @@ package com.techstore.entities;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
-public class Review {
+public class ItemReview {
     private String userId = null;
     private String userName = null;
     private String description = null;
@@ -11,7 +11,7 @@ public class Review {
     private LocalDateTime datetime = null;
     private String itemId = null;
 
-    public Review() {}
+    public ItemReview() {}
 
     public String getUserID() {
         return userId;

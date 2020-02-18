@@ -1,15 +1,14 @@
 package com.techstore.repositories;
 
-import com.techstore.entities.Item;
 import com.techstore.entities.Order;
+import com.techstore.entities.OrderedItem;
 import com.techstore.jdbc.ConnectionPool;
 import com.techstore.specifications.SqlSpecification;
+import com.techstore.specifications.orders.OrderItemsSpecificationByMultipleID;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class OrderRepository implements Repository<Order> {
 
@@ -19,15 +18,15 @@ public class OrderRepository implements Repository<Order> {
             connection.setAutoCommit(false);
             connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
-            for (Item item : entity.getOrderItems()) {
+            for (String itemId : entity.getOrderItemsIds()) {
                 try (PreparedStatement checkAvailability = connection.prepareStatement(
                         "SELECT availability FROM items WHERE id=?")) {
-                    checkAvailability.setString(1, item.getId());
+                    checkAvailability.setString(1, itemId);
                     checkAvailability.execute();
 
                     ResultSet resultSet = checkAvailability.getResultSet();
                     while (resultSet.next()) {
-                        if (entity.getItemsQuantity().get(item.getId()) > resultSet.getInt("availability")) {
+                        if (entity.getItemsQuantity().get(itemId) > resultSet.getInt("availability")) {
                             connection.rollback();
                             return;
                         }
@@ -55,13 +54,13 @@ public class OrderRepository implements Repository<Order> {
                 createdOrderID.next();
                 final long OrderID = createdOrderID.getLong(1);
 
-                for (Item item : entity.getOrderItems()) {
+                for (String itemId : entity.getOrderItemsIds()) {
                     try (PreparedStatement addOrderItemsStatement = connection.prepareStatement(
                             "INSERT INTO orders_items(order_id, item_id, quantity) VALUES(?, ?, ?)"))
                     {
                         addOrderItemsStatement.setLong(1, OrderID);
-                        addOrderItemsStatement.setString(2, item.getId());
-                        addOrderItemsStatement.setInt(3, entity.getItemsQuantity().get(item.getId()));
+                        addOrderItemsStatement.setString(2, itemId);
+                        addOrderItemsStatement.setInt(3, entity.getItemsQuantity().get(itemId));
                         addOrderItemsStatement.execute();
                     } catch(final SQLException exc) {
                         connection.rollback();
@@ -71,8 +70,8 @@ public class OrderRepository implements Repository<Order> {
                     try (PreparedStatement reduceAvailabilityStatement = connection.prepareStatement(
                             "UPDATE items SET availability=availability-? WHERE id=?"))
                     {
-                        reduceAvailabilityStatement.setInt(1, entity.getItemsQuantity().get(item.getId()));
-                        reduceAvailabilityStatement.setString(2, item.getId());
+                        reduceAvailabilityStatement.setInt(1, entity.getItemsQuantity().get(itemId));
+                        reduceAvailabilityStatement.setString(2, itemId);
                         reduceAvailabilityStatement.execute();
                     } catch (final SQLException exc) {
                         connection.rollback();
@@ -99,6 +98,55 @@ public class OrderRepository implements Repository<Order> {
         throw new UnsupportedOperationException();
     }
 
+    private List<Order> fillOrders(final List<Order> orders, final List<OrderedItem> items) {
+        for (Order order : orders) {
+            List<OrderedItem> orderItems = items.stream()
+                    .filter(orderedItem -> orderedItem.getOrderId().equals(order.getId()))
+                    .collect(Collectors.toList());
+
+            order.setItemsQuantity(orderItems.stream()
+                    .collect(Collectors.toMap(OrderedItem::getId, OrderedItem::getQuantity)));
+
+            order.setOrderItems(orderItems.stream()
+                    .map(OrderedItem::getId)
+                    .collect(Collectors.toList()));
+        }
+
+        return orders;
+    }
+
+    private List<Order> getOrderItems(final Connection connection, final List<Order> orders) throws SQLException {
+        try (PreparedStatement itemsQuery = connection.prepareStatement(
+                new OrderItemsSpecificationByMultipleID(orders.stream()
+                        .map(Order::getId)
+                        .collect(Collectors.toList())).toSql())) {
+            itemsQuery.execute();
+
+            ResultSet itemsResult = itemsQuery.getResultSet();
+            List<OrderedItem> items = new ArrayList<>();
+
+            while (itemsResult.next()) {
+                OrderedItem item = new OrderedItem();
+                item.setId(itemsResult.getString("id"));
+                item.setCategoryId(itemsResult.getString("category_id"));
+                item.setAvailability(itemsResult.getInt("availability"));
+                item.setManufacturer(itemsResult.getString("manufacturer"));
+                item.setName(itemsResult.getString("name"));
+                item.setPrice(itemsResult.getBigDecimal("price"));
+                item.setMainPhoto(itemsResult.getString("main_photo"));
+                item.setCategory(itemsResult.getString("category"));
+                item.setDiscount(itemsResult.getBigDecimal("discount"));
+                item.setNewItem(itemsResult.getBoolean("new"));
+                item.setOrderId(itemsResult.getString("order_id"));
+                item.setQuantity(itemsResult.getInt("quantity"));
+
+                items.add(item);
+            }
+
+            return fillOrders(orders, items);
+        }
+    }
+
     @Override
     public List<Order> query(final SqlSpecification spec) throws SQLException {
         try (Connection connection = ConnectionPool.getConnection();
@@ -110,8 +158,7 @@ public class OrderRepository implements Repository<Order> {
 
             while (result.next()) {
                 Order order = new Order();
-
-                order.setId(result.getInt("id"));
+                order.setId(result.getString("id"));
                 order.setStatus(result.getString("status"));
                 order.setTotalAmount(result.getBigDecimal("total_amount"));
                 order.setCity(result.getString("city"));
@@ -120,43 +167,10 @@ public class OrderRepository implements Repository<Order> {
                 order.setClientPhoneNumber(result.getString("phone_number"));
                 order.setCreationDate(result.getTimestamp("creation_date").toLocalDateTime());
 
-                try (PreparedStatement itemsQuery = connection.prepareStatement(
-                        "SELECT oi.item_id, oi.quantity, i.* " +
-                                "FROM orders_items oi " +
-                                "JOIN items i ON i.id=oi.item_Id " +
-                                "WHERE oi.order_id=?")) {
-                    itemsQuery.setInt(1, order.getId());
-                    itemsQuery.execute();
-
-                    ResultSet itemsResult = itemsQuery.getResultSet();
-                    List<Item> items = new ArrayList<>();
-                    Map<String, Integer> itemsQuantity = new TreeMap<>();
-
-                    while (itemsResult.next()) {
-                        Item item = new Item();
-                        item.setId(itemsResult.getString("id"));
-                        item.setCategoryId(itemsResult.getString("category_id"));
-                        item.setAvailability(itemsResult.getInt("availability"));
-                        item.setManufacturer(itemsResult.getString("manufacturer"));
-                        item.setName(itemsResult.getString("name"));
-                        item.setPrice(itemsResult.getBigDecimal("price"));
-                        item.setMainPhoto(itemsResult.getString("main_photo"));
-                        item.setCategory(itemsResult.getString("category"));
-                        item.setDiscount(itemsResult.getBigDecimal("discount"));
-                        item.setNewItem(itemsResult.getBoolean("new"));
-
-                        itemsQuantity.put(itemsResult.getString("item_id"), itemsResult.getInt("quantity"));
-
-                        items.add(item);
-                    }
-
-                    order.setOrderItems(items);
-                    order.setItemsQuantity(itemsQuantity);
-                }
-
                 orders.add(order);
             }
-            return orders;
+
+            return getOrderItems(connection, orders);
         }
     }
 }

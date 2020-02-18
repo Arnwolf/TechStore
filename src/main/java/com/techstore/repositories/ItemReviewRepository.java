@@ -1,6 +1,6 @@
 package com.techstore.repositories;
 
-import com.techstore.entities.Review;
+import com.techstore.entities.ItemReview;
 import com.techstore.jdbc.ConnectionPool;
 import com.techstore.specifications.SqlSpecification;
 
@@ -11,10 +11,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemReviewRepository implements Repository<Review> {
+public class ItemReviewRepository implements Repository<ItemReview> {
 
     @Override
-    public void add(final Review entity) throws SQLException {
+    public void add(final ItemReview entity) throws SQLException {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(
                      "INSERT INTO item_reviews(user_id, item_id, rating, description, creation_date) VALUES(?,?,?,?,?)")) {
@@ -28,27 +28,27 @@ public class ItemReviewRepository implements Repository<Review> {
     }
 
     @Override
-    public void update(final Review entity) {
+    public void update(final ItemReview entity) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void remove(final Review entity) {
+    public void remove(final ItemReview entity) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public List<Review> query(final SqlSpecification spec) throws SQLException {
+    public List<ItemReview> query(final SqlSpecification spec) throws SQLException {
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement query = connection.prepareStatement(spec.toSql())) {
             query.execute();
 
             ResultSet result = query.getResultSet();
-            List<Review> itemReviews = new ArrayList<>();
+            List<ItemReview> itemReviews = new ArrayList<>();
 
             while (result.next()) {
-                Review review = new Review();
+                ItemReview review = new ItemReview();
                 review.setDatetime(result.getTimestamp("creation_date").toLocalDateTime());
                 review.setUserID(result.getString("user_id"));
                 review.setUserName(result.getString("name"));

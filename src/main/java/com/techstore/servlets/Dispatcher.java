@@ -1,6 +1,7 @@
 package com.techstore.servlets;
 
 import com.techstore.controllers.BaseController;
+import com.techstore.controllers.ProfileController;
 import com.techstore.controllers.UnknownController;
 import com.techstore.jdbc.ConnectionPool;
 
@@ -22,7 +23,7 @@ public class Dispatcher extends HttpServlet {
 
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
-        String path = servletConfig.getServletContext().getRealPath("/WEB-INF/application.properties");
+        final String path = servletConfig.getServletContext().getRealPath("/WEB-INF/application.properties");
         ConnectionPool.setConfiguration(path);
 
         super.init(servletConfig);

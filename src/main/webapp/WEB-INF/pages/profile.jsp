@@ -88,7 +88,7 @@
                                 <div class="form-group row">
 
                                     <input onchange="changeSubscription()" type="checkbox"
-                                           name="subscribe" <c:if test="${isSubscribed == true}">checked</c:if> class="form-check-input"
+                                           name="subscribe" <c:if test="${isSubscribed == true}">value="on" checked</c:if> class="form-check-input"
                                            id="materialUnchecked">
                                     <label class="form-check-label" for="materialUnchecked">Subscribe to letters</label>
                                 </div>

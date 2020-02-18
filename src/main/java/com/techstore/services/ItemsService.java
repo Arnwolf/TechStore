@@ -12,47 +12,15 @@ import java.util.logging.Logger;
 
 public class ItemsService {
     private Repository<Item> itemsRepository;
+
     private final static Logger LOG = Logger.getLogger(ItemsService.class.getName());
-
     private static ItemsService instance = new ItemsService(new ItemRepository());
-
     public static ItemsService getInstance() {
         return instance;
     }
 
-
     private ItemsService(final Repository<Item> itemsRepository) {
         this.itemsRepository = itemsRepository;
-    }
-
-    public List<Item> getMainPageItems() {
-        return getItems(new ItemSpecificationByPopular());
-    }
-
-    public List<Item> getCategoryItems(final String categoryID) {
-        return getItems(new ItemSpecificationByCategoryID(categoryID));
-    }
-
-    public Item getItem(final String itemId) {
-        List<Item> items = getItems(new ItemSpecificationByID(itemId));
-        return items.isEmpty() ? null : items.get(0);
-    }
-
-    private List<Item> getItemsByParameterValue(final String paramID, final String paramValue) {
-        return getItems(new ItemSpecificationByParamValue(paramID, paramValue));
-    }
-
-    private List<Item> getSearchedItems(final String searchingName) {
-        return getItems(new ItemSpecificationBySearchName(searchingName));
-    }
-
-    public List<Item> getItems(final Collection<String> itemsIds) {
-        List<Item> items = new ArrayList<>();
-        for (String id : itemsIds) {
-            items.add(getItems(new ItemSpecificationByID(id)).get(0));
-        }
-
-        return items;
     }
 
     private List<Item> getItems(SqlSpecification spec) {
@@ -65,6 +33,23 @@ public class ItemsService {
         }
     }
 
+    public List<Item> getMainPageItems() {
+        return getItems(new ItemSpecificationByPopular());
+    }
+
+    public List<Item> getCategoryItems(final String categoryID) {
+        return getItems(new ItemSpecificationByCategoryID(categoryID));
+    }
+
+    public Item getItem(final String itemId) {
+        List<Item> items = getItems(Arrays.asList(itemId));
+        return items.isEmpty() ? null : items.get(0);
+    }
+
+    public List<Item> getItems(final Collection<String> itemsIds) {
+        return getItems(new ItemSpecificationByID(itemsIds));
+    }
+
     public List<Item> getSearchedItems(final Map<String, String> paramMap) {
         final String categoryID = paramMap.get("categoryID");
         final String paramID = paramMap.get("ParamID");
@@ -72,11 +57,11 @@ public class ItemsService {
         final String searchValue = paramMap.get("search");
 
         if (!categoryID.isEmpty())
-            return getCategoryItems(categoryID);
+            return getItems(new ItemSpecificationByCategoryID(categoryID));
         else if (!paramID.isEmpty() && !paramValue.isEmpty())
-            return getItemsByParameterValue(paramID, paramValue);
+            return getItems(new ItemSpecificationByParamValue(paramID, paramValue));
         else if (!searchValue.isEmpty())
-            return getSearchedItems(searchValue);
+            return getItems(new ItemSpecificationBySearchName(searchValue));
         else
             return new ArrayList<>();
     }

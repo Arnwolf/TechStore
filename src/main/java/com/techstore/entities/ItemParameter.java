@@ -1,6 +1,6 @@
 package com.techstore.entities;
 
-public class Parameter {
+public class ItemParameter {
     private String id = null;
     private String itemId = null;
     private String itemDetailName = null;
@@ -10,7 +10,7 @@ public class Parameter {
     private boolean searchable = false;
     private boolean changeable = false;
 
-    public Parameter() {}
+    public ItemParameter() {}
 
     public String getId() {
         return id;

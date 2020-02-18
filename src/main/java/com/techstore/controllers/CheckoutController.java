@@ -21,16 +21,13 @@ public class CheckoutController extends BaseController {
                 break;
             }
             case "get": {
-                getView();
+                getOrderForm();
                 break;
             }
-            default:
-                forward("not-found");
-                break;
         }
     }
 
-    private void getView() throws ServletException, IOException {
+    private void getOrderForm() throws ServletException, IOException {
         final String userId = (String)req.getSession().getAttribute("UserID");
 
         List<String> errors = new ArrayList<>();
@@ -88,7 +85,7 @@ public class CheckoutController extends BaseController {
         } catch (final RuntimeException exc) {
             errors.add(exc.getMessage());
             req.setAttribute("errors", errors);
-            process();
+            getOrderForm();
             return;
         }
 

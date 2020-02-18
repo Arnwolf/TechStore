@@ -1,8 +1,8 @@
 package com.techstore.repositories;
 
 import com.techstore.entities.DetailedItem;
-import com.techstore.entities.Parameter;
-import com.techstore.entities.Review;
+import com.techstore.entities.ItemParameter;
+import com.techstore.entities.ItemReview;
 import com.techstore.jdbc.ConnectionPool;
 import com.techstore.specifications.SqlSpecification;
 import com.techstore.specifications.parameters.ChangeableParameterSpecificationByItemName;
@@ -37,16 +37,16 @@ public class DetailedItemRepository implements Repository<DetailedItem> {
     }
 
 
-    private List<Parameter> getItemParameters(final String itemId, final String itemName, Connection connection) throws SQLException  {
+    private List<ItemParameter> getItemParameters(final String itemId, final String itemName, Connection connection) throws SQLException  {
         try (PreparedStatement itemParamsQuery =
                      connection.prepareStatement(new ParameterSpecificationByItemID(itemId).toSql())) {
             itemParamsQuery.execute();
 
             ResultSet paramsResult = itemParamsQuery.getResultSet();
-            List<Parameter> itemParams = new ArrayList<>();
+            List<ItemParameter> itemParams = new ArrayList<>();
 
             while (paramsResult.next()) {
-                Parameter parameter = new Parameter();
+                ItemParameter parameter = new ItemParameter();
                 parameter.setId(paramsResult.getString("id"));
                 parameter.setCategoryDetailId(paramsResult.getString("category_parameter_id"));
                 parameter.setItemDetailName(paramsResult.getString("parameter_name"));
@@ -65,7 +65,7 @@ public class DetailedItemRepository implements Repository<DetailedItem> {
                 ResultSet changeableParamsResult = changeableItemParamsQuery.getResultSet();
 
                 while (changeableParamsResult.next()) {
-                    Parameter parameter = new Parameter();
+                    ItemParameter parameter = new ItemParameter();
                     parameter.setId(changeableParamsResult.getString("id"));
                     parameter.setCategoryDetailId(changeableParamsResult.getString("category_parameter_id"));
                     parameter.setItemDetailName(changeableParamsResult.getString("parameter_name"));
@@ -82,16 +82,16 @@ public class DetailedItemRepository implements Repository<DetailedItem> {
         }
     }
 
-    private List<Review> getItemReviews(final String itemId, final Connection connection) throws SQLException  {
+    private List<ItemReview> getItemReviews(final String itemId, final Connection connection) throws SQLException  {
         try (PreparedStatement reviewQuery =
                      connection.prepareStatement(new ReviewSpecificationByItemID(itemId).toSql())) {
             reviewQuery.execute();
 
             ResultSet reviewsResult = reviewQuery.getResultSet();
-            List<Review> itemReviews = new ArrayList<>();
+            List<ItemReview> itemReviews = new ArrayList<>();
 
             while (reviewsResult.next()) {
-                Review review = new Review();
+                ItemReview review = new ItemReview();
                 review.setDatetime(reviewsResult.getTimestamp("creation_date").toLocalDateTime());
                 review.setUserID(reviewsResult.getString("user_id"));
                 review.setUserName(reviewsResult.getString("name"));

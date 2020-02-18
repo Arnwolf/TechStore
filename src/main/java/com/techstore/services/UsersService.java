@@ -17,10 +17,9 @@ import java.util.logging.Logger;
 
 public class UsersService {
     private Repository<User> userRepository;
+
     private final static Logger LOG = Logger.getLogger(UsersService.class.getName());
-
     private static UsersService instance = new UsersService(new UserRepository());
-
     public static UsersService getInstance() {
         return instance;
     }

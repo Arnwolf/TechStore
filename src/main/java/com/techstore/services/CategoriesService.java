@@ -7,12 +7,10 @@ import com.techstore.specifications.SqlSpecification;
 import com.techstore.specifications.categories.CategorySpecificationByParent;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class CategoriesService {
     private Repository<Category> categoryRepository;
@@ -68,22 +66,33 @@ public class CategoriesService {
         }
     }
 
-
     public List<Category> getRootCategories() {
-        return getCategories(new CategorySpecificationByParent("0"));
+        return getCategories(new CategorySpecificationByParent(Arrays.asList("0")));
     }
 
     public List<Category> getSubCategories(final String categoryID) {
-        return getCategories(new CategorySpecificationByParent(categoryID));
+        return getCategories(new CategorySpecificationByParent(Arrays.asList(categoryID)));
     }
 
     public Map<String, List<Category>> getSubCategories(final List<Category> categories) {
-        Map<String, List<Category>> subCategories = new TreeMap<>();
+        Map<String, List<Category>> categoriesTree = new TreeMap<>();
 
-        for (Category category : categories)
-            subCategories.put(category.getId(), getSubCategories(category.getId()));
+        List<String> categoriesIds = new ArrayList<>(categories.size());
+        categoriesIds.addAll(categories
+                .stream()
+                .map(Category::getId)
+                .collect(Collectors.toList()));
 
-        return subCategories;
+        List<Category> subCategories = getCategories(new CategorySpecificationByParent(categoriesIds));
+
+        for (String id : categoriesIds) {
+            categoriesTree.put(id, subCategories.stream()
+                    .filter(category -> category.getParentCategoryId()
+                    .equals(id))
+                    .collect(Collectors.toList()));
+        }
+
+        return categoriesTree;
     }
 
 
@@ -96,7 +105,7 @@ public class CategoriesService {
 
         if (!categoryID.isEmpty()) {
             return getSubCategories(categoryID);
-        } else
+        } else //by name
             return new ArrayList<>();
     }
 }

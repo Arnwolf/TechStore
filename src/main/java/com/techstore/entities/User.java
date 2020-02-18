@@ -9,7 +9,7 @@ public class User {
     private String phoneNumber;
     private String city;
     private String street;
-    private boolean subscribed;
+    private Boolean subscribed;
 
     public User() {}
 
@@ -77,11 +77,11 @@ public class User {
         this.hashedId = hashedId;
     }
 
-    public boolean isSubscribed() {
+    public Boolean isSubscribed() {
         return subscribed;
     }
 
-    public void setSubscribed(boolean subscribed) {
+    public void setSubscribed(Boolean subscribed) {
         this.subscribed = subscribed;
     }
 }

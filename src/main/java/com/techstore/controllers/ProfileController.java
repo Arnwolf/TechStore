@@ -11,14 +11,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+//GET to /registration TODO: BUG!
+//POST to /registration
+//GET to /login
+//POST to /login
+//GET to /
+//GET to /profile
+//getView somehow modifies user`s subscribe value
 
 public class ProfileController extends BaseController {
 
     @Override
     public void process() throws ServletException, IOException {
-        if (req.getMethod().equalsIgnoreCase("POST"))
+        if (req.getMethod().equalsIgnoreCase("post")) {
             updateProfile();
-        else
+        } else
             getView();
     }
 

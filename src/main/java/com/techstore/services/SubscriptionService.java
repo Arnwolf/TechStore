@@ -11,10 +11,9 @@ import java.util.logging.Logger;
 
 public class SubscriptionService {
     private Repository<String> subscriptionRepository;
+
     private final static Logger LOG = Logger.getLogger(SubscriptionService.class.getName());
-
     private static SubscriptionService instance = new SubscriptionService(new SubscriptionRepository());
-
     public static SubscriptionService getInstance() {
         return instance;
     }

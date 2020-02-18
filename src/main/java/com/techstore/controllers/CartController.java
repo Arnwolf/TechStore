@@ -1,6 +1,5 @@
 package com.techstore.controllers;
 
-
 import com.techstore.components.ShoppingCart;
 import com.techstore.entities.Category;
 import com.techstore.services.CategoriesService;
@@ -55,7 +54,7 @@ public class CartController extends BaseController {
         List<Category> roots = categoriesService.getRootCategories();
         req.setAttribute("categories", roots);
         req.setAttribute("subCategories", categoriesService.getSubCategories(roots));
-        req.setAttribute("items", itemsService.getItems(cart.getItems()));
+        req.setAttribute("items", itemsService.getItems(cart.getIds()));
         req.setAttribute("cart", cart);
 
         forward("cart");

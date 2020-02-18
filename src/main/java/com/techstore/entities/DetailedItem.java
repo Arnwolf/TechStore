@@ -3,27 +3,27 @@ package com.techstore.entities;
 import java.util.List;
 
 public class DetailedItem extends Item {
-    private List<Parameter> itemParameters;
-    private List<Review> itemReviews;
+    private List<ItemParameter> itemParameters;
+    private List<ItemReview> itemReviews;
     private List<String> allPhotos;
     private double averageScore;
 
     public DetailedItem() { }
 
-    public List<Parameter> getItemParameters() {
+    public List<ItemParameter> getItemParameters() {
         return itemParameters;
     }
 
-    public void setItemParameters(List<Parameter> itemParameters) {
+    public void setItemParameters(List<ItemParameter> itemParameters) {
         this.itemParameters = itemParameters;
     }
 
-    public List<Review> getItemReviews() {
+    public List<ItemReview> getItemReviews() {
         return itemReviews;
     }
 
-    public void setItemReviews(List<Review> itemReviews) {
-        for (Review rev : itemReviews) {
+    public void setItemReviews(List<ItemReview> itemReviews) {
+        for (ItemReview rev : itemReviews) {
             if (rev.getUserName().isEmpty())
                 rev.setUserName("Unnamed User");
 

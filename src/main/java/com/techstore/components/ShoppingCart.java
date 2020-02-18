@@ -7,10 +7,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class ShoppingCart {
     private HttpSession session;
@@ -63,13 +60,19 @@ public class ShoppingCart {
     }
 
     public void removeItem(final String itemId, final int quantity) { //TODO: quantity > cartItemQuantity ?!?
-        Item toRemove = ItemsService.getInstance().getItem(itemId);
+        Integer cartItemQuantity = itemsQuantity.get(itemId);
+        int reduceQuantity;
 
-        for (int i = 0; i < quantity; ++i)
+        if (quantity > cartItemQuantity)
+            reduceQuantity = cartItemQuantity;
+        else
+            reduceQuantity = quantity;
+
+        Item toRemove = ItemsService.getInstance().getItem(itemId);
+        for (int i = 0; i < reduceQuantity; ++i)
             totalAmount = totalAmount.subtract(toRemove.getPrice().subtract(toRemove.getDiscount()));
 
-        Integer cartItemQuantity = itemsQuantity.get(itemId);
-        itemsQuantity.put(itemId, cartItemQuantity - quantity);
+        itemsQuantity.put(itemId, cartItemQuantity - reduceQuantity);
     }
 
     public void save() {
@@ -80,8 +83,12 @@ public class ShoppingCart {
         return itemsQuantity.isEmpty();
     }
 
-    public Collection<String> getItems() {
+    public Collection<String> getIds() {
         return itemsQuantity.keySet();
+    }
+
+    public Map<String, Integer> getCart() {
+        return itemsQuantity;
     }
 
     public BigDecimal getTotalAmount() {

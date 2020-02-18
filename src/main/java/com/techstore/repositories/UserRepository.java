@@ -15,6 +15,7 @@ public class UserRepository implements Repository<User> {
 
     @Override
     public void add(final User entity) throws SQLException {
+
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement createStatement = connection.prepareStatement(
                      "INSERT INTO users(email, password, subscribe, name) VALUES(?,?,?,?)")) {
@@ -28,40 +29,40 @@ public class UserRepository implements Repository<User> {
 
     @Override
     public void update(final User entity) throws SQLException {
-
         StringBuilder query = new StringBuilder("UPDATE users SET "); // TODO:Security issue
-        boolean appendedFields = false;
+        boolean isFirstAppend = false;
 
         if (entity.getHashedID() != null) {
             query.append(String.format("hashed_id='%s'", entity.getHashedID()));
-            appendedFields = true;
+            isFirstAppend = true;
         }
         if (entity.getPass() != null) {
-            query.append(String.format("%spassword='%s'", appendedFields ? "," : "", entity.getPass()));
-            appendedFields = true;
+            query.append(String.format("%spassword='%s'", isFirstAppend ? "," : "", entity.getPass()));
+            isFirstAppend = true;
         }
         if (entity.getPhoneNumber() != null) {
-            query.append(String.format("%sphone_number='%s'", appendedFields ? "," : "", entity.getPhoneNumber()));
-            appendedFields = true;
+            query.append(String.format("%sphone_number='%s'", isFirstAppend ? "," : "", entity.getPhoneNumber()));
+            isFirstAppend = true;
         }
         if (entity.getEmail() != null) {
-            query.append(String.format("%semail='%s'", appendedFields ? "," : "", entity.getEmail()));
-            appendedFields = true;
+            query.append(String.format("%semail='%s'", isFirstAppend ? "," : "", entity.getEmail()));
+            isFirstAppend = true;
         }
         if (entity.getName() != null) {
-            query.append(String.format("%sname='%s'", appendedFields ? "," : "", entity.getName()));
-            appendedFields = true;
+            query.append(String.format("%sname='%s'", isFirstAppend ? "," : "", entity.getName()));
+            isFirstAppend = true;
         }
         if (entity.getStreet() != null) {
-            query.append(String.format("%sstreet='%s'", appendedFields ? "," : "", entity.getStreet()));
-            appendedFields = true;
+            query.append(String.format("%sstreet='%s'", isFirstAppend ? "," : "", entity.getStreet()));
+            isFirstAppend = true;
         }
         if (entity.getCity() != null) {
-            query.append(String.format("%scity='%s'", appendedFields ? "" : ",", entity.getCity()));
-            appendedFields = true;
+            query.append(String.format("%scity='%s'", isFirstAppend ? "," : "", entity.getCity()));
+            isFirstAppend = true;
         }
-
-        query.append(String.format("%ssubscribe=%b", appendedFields ? "," : "", entity.isSubscribed()));
+        if (entity.isSubscribed() != null) {
+            query.append(String.format("%ssubscribe=%b", isFirstAppend ? "" : ",", entity.isSubscribed()));
+        }
 
         query.append(String.format(" WHERE id=%s", entity.getID()));
 
@@ -94,6 +95,7 @@ public class UserRepository implements Repository<User> {
                 user.setStreet(result.getString("street"));
                 user.setPhoneNumber(result.getString("phone_number"));
                 user.setID(result.getString("id"));
+
                 user.setSubscribed(result.getBoolean("subscribe"));
 
                 users.add(user);

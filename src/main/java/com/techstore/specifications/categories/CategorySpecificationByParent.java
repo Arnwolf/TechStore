@@ -2,15 +2,18 @@ package com.techstore.specifications.categories;
 
 import com.techstore.specifications.SqlSpecification;
 
-public class CategorySpecificationByParent implements SqlSpecification {
-    private String categoryID;
+import java.util.Collection;
 
-    public CategorySpecificationByParent(final String categoryID) {
-        this.categoryID = categoryID;
+public class CategorySpecificationByParent implements SqlSpecification {
+    private Collection<String> categoriesId;
+
+    public CategorySpecificationByParent(final Collection<String> categoriesId) {
+        this.categoriesId = categoriesId;
     }
 
     @Override
-    public String toSql() { //TODO: join categories on categories
-        return String.format("SELECT id, name, parent_category_id FROM categories WHERE parent_category_id=%s", categoryID);
+    public String toSql() {
+        return String.format("SELECT id, name, parent_category_id FROM categories WHERE parent_category_id IN (%s)",
+                String.join(",", categoriesId));
     }
 }

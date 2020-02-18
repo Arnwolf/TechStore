@@ -2,28 +2,27 @@ package com.techstore.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
 public class Order {
-    private int id = 0;
-    private BigDecimal totalAmount = null;
-    private String street = null;
-    private String city = null;
-    private String clientName = null;
-    private String clientPhoneNumber = null;
-    private List<Item> orderItems = null;
-    private Map<String, Integer> itemsQuantity = null;
-    private String email = null;
+    private String id;
+    private BigDecimal totalAmount;
+    private String street;
+    private String city;
+    private String clientName;
+    private String clientPhoneNumber;
+    private List<String> orderItemsIds;
+    private Map<String, Integer> itemsQuantity;
+    private String email;
     private LocalDateTime creationDate;
-    private String status = null;
+    private String status;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -67,12 +66,12 @@ public class Order {
         this.clientPhoneNumber = clientPhoneNumber;
     }
 
-    public List<Item> getOrderItems() {
-        return orderItems;
+    public List<String> getOrderItemsIds() {
+        return orderItemsIds;
     }
 
-    public void setOrderItems(List<Item> orderItems) {
-        this.orderItems = orderItems;
+    public void setOrderItems(List<String> orderItemsIds) {
+        this.orderItemsIds = orderItemsIds;
     }
 
     public String getEmail() {

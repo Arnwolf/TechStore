@@ -13,10 +13,9 @@ import java.util.logging.Logger;
 
 public class UserWishesService {
     private Repository<WishedItem> wishesRepository;
+
     private final static Logger LOG = Logger.getLogger(UserWishesService.class.getName());
-
     private static UserWishesService instance = new UserWishesService(new WishesRepository());
-
     public static UserWishesService getInstance() {
         return instance;
     }
@@ -66,7 +65,9 @@ public class UserWishesService {
     }
 
     public void addUserWish(final String hashedUserId, final String itemId) throws RuntimeException {
-        if (getUserWishes(hashedUserId).stream().noneMatch((wish) -> wish.getId().equals(itemId)))
+        if (getUserWishes(hashedUserId).stream()
+                .noneMatch((wish) -> wish.getId()
+                .equals(itemId)))
             addWish(UsersService.getInstance().loadUserByHashedId(hashedUserId).getID(), itemId);
     }
 
