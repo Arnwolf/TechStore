@@ -29,7 +29,7 @@ public class UserRepository implements Repository<User> {
 
     @Override
     public void update(final User entity) throws SQLException {
-        StringBuilder query = new StringBuilder("UPDATE users SET "); // TODO:Security issue
+        StringBuilder query = new StringBuilder("UPDATE users SET ");
         boolean isFirstAppend = false;
 
         if (entity.getHashedID() != null) {
