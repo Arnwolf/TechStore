@@ -8,55 +8,44 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+
 
 public class ProfileController extends BaseController {
 
     @Override
     public void process() throws ServletException, IOException {
-        if (req.getMethod().equalsIgnoreCase("post")) {
+        if (req.getMethod().equalsIgnoreCase("post"))
             updateProfile();
-        } else
-            getView();
+        else
+            getInfoPage();
     }
 
-
     private void updateProfile() throws ServletException, IOException {
-        Map<String, String> newUserParams = new TreeMap<>();
-        newUserParams.put("name", req.getParameter("name") == null ?
-                "" : req.getParameter("name"));
-        newUserParams.put("street", req.getParameter("street") == null ?
-                "" : req.getParameter("street"));
-        newUserParams.put("city", req.getParameter("city") == null ?
-                "" : req.getParameter("city"));
-        newUserParams.put("country", req.getParameter("country") == null ?
-                "" : req.getParameter("country"));
-        newUserParams.put("phone", req.getParameter("phone") == null ?
-                "" : req.getParameter("phone"));
-        newUserParams.put("psw", req.getParameter("psw") == null ?
-                "" : req.getParameter("psw"));
-        newUserParams.put("email", req.getParameter("email") == null ?
-                "" : req.getParameter("email"));
-        newUserParams.put("subscribe", req.getParameter("subscribe") == null ?
-                "" : req.getParameter("subscribe"));
-        newUserParams.put("userHashedId", (String)req.getSession(false).getAttribute("UserID"));
+        User newInfo = new User();
+        newInfo.setName(req.getParameter("name"));
+        newInfo.setPass(req.getParameter("psw") == null ? "" : req.getParameter("psw"));
+        newInfo.setEmail(req.getParameter("email"));
+        newInfo.setPhoneNumber(req.getParameter("phone"));
+        newInfo.setStreet(req.getParameter("street"));
+        newInfo.setCity(req.getParameter("city"));
+        newInfo.setHashedID((String)req.getSession(false).getAttribute("UserID"));
+        newInfo.setSubscribed(req.getParameter("subscribe").equals("on"));
 
         List<String> errors = new ArrayList<>();
         UsersService userService = UsersService.getInstance();
 
         try {
-            userService.updateUserInfo(newUserParams);
+            userService.updateUserInfo(newInfo);
         } catch (final RuntimeException exc) {
             errors.add(exc.getMessage());
             exc.printStackTrace();
         }
 
         req.setAttribute("errors", errors);
-        getView();
+        getInfoPage();
     }
 
-    private void getView() throws ServletException, IOException {
+    private void getInfoPage() throws ServletException, IOException {
         HttpSession session = req.getSession();
 
         List<String> errors = new ArrayList<>();

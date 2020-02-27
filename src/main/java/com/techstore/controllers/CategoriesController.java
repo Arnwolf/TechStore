@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+
 public class CategoriesController extends BaseController {
+
     @Override
     public void process() throws ServletException, IOException {
         Map<String, String> searchedParams = new TreeMap<>();

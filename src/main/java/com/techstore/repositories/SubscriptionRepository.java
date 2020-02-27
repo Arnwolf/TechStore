@@ -1,56 +1,68 @@
 package com.techstore.repositories;
 
-import com.techstore.jdbc.ConnectionPool;
-import com.techstore.specifications.SqlSpecification;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import com.techstore.connection.ConnectionManager;
+import com.techstore.entities.Subscription;
+import javax.persistence.EntityManager;
 import java.util.List;
 
-public class SubscriptionRepository implements Repository<String> {
-    @Override
-    public void add(final String email) throws SQLException {
-        try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement query = connection.prepareStatement(
-                     "INSERT INTO subscription(email) VALUES(?)")) {
-            query.setString(1, email);
-            query.execute();
-        }
+
+public class SubscriptionRepository {
+
+    public void add(final Subscription subscription) {
+        EntityManager entityManager = ConnectionManager.getConnection();
+        entityManager.getTransaction().begin();
+
+        entityManager.persist(subscription);
+
+        if (entityManager.getTransaction().isActive())
+            entityManager.getTransaction().commit();
+
+        entityManager.close();
     }
 
-    @Override
-    public void update(final String email) {
-        throw new UnsupportedOperationException();
+    public void remove(final Subscription subscription) {
+        EntityManager entityManager = ConnectionManager.getConnection();
+        entityManager.getTransaction().begin();
+
+        //entityManager
+                //.createQuery(String.format("DELETE FROM Subscription s WHERE s.email='%s'", email), Subscription.class)
+                //.executeUpdate();
+        entityManager.remove(subscription);
+
+        if (entityManager.getTransaction().isActive())
+            entityManager.getTransaction().commit();
+
+        entityManager.close();
     }
 
-    @Override
-    public void remove(final String email) throws SQLException {
-        try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement query = connection.prepareStatement(
-                     "DELETE FROM subscription WHERE email=?")) {
-            query.setString(1, email);
-            query.execute();
-        }
+    public List<Subscription> findAll() {
+        EntityManager entityManager = ConnectionManager.getConnection();
+        entityManager.getTransaction().begin();
+
+        List<Subscription> subscriptions = entityManager.createQuery("SELECT s FROM Subscription s",
+                Subscription.class).getResultList();
+
+        if (entityManager.getTransaction().isActive())
+            entityManager.getTransaction().commit();
+
+        entityManager.close();
+
+        return subscriptions;
     }
 
-    @Override
-    public List<String> query(final SqlSpecification spec) throws SQLException {
-        try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement query = connection.prepareStatement(spec.toSql())) {
-            query.execute();
+    public Subscription findByEmail(final String email) {
+        EntityManager entityManager = ConnectionManager.getConnection();
+        entityManager.getTransaction().begin();
 
-            ResultSet result = query.getResultSet();
-            List<String> subscriptions = new ArrayList<>();
+        List<Subscription> subscriptions = entityManager.createQuery(
+                String.format("SELECT s FROM Subscription s WHERE s.email='%s'", email),
+                Subscription.class).getResultList();
 
-            while (result.next()) {
-                final String subscription = result.getString("email");
-                subscriptions.add(subscription);
-            }
+        if (entityManager.getTransaction().isActive())
+            entityManager.getTransaction().commit();
 
-            return subscriptions;
-        }
+        entityManager.close();
+
+        return subscriptions.isEmpty() ? null : subscriptions.get(0);
     }
 }

@@ -1,10 +1,8 @@
 package com.techstore.servlets;
 
+import com.techstore.connection.ConnectionManager;
 import com.techstore.controllers.BaseController;
-import com.techstore.controllers.ProfileController;
 import com.techstore.controllers.UnknownController;
-import com.techstore.jdbc.ConnectionPool;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,23 +14,19 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
+
 @WebServlet(name = "DispatcherServlet",
         loadOnStartup = 1,
         urlPatterns = "/")
 public class Dispatcher extends HttpServlet {
 
     @Override
-    public void init(ServletConfig servletConfig) throws ServletException {
-        final String path = servletConfig.getServletContext().getRealPath("/WEB-INF/application.properties");
-        ConnectionPool.setConfiguration(path);
-
-        super.init(servletConfig);
-    }
+    public void init(ServletConfig servletConfig) throws ServletException { super.init(servletConfig); }
 
     @Override
     public void destroy() {
         super.destroy();
-        ConnectionPool.close();
+        ConnectionManager.closeFactory();
     }
 
     @Override

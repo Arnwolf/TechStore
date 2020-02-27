@@ -2,12 +2,12 @@ package com.techstore.controllers;
 
 import com.techstore.entities.Category;
 import com.techstore.services.CategoriesService;
-import com.techstore.services.ItemsService;
+import com.techstore.services.ProductService;
 import com.techstore.services.SubscriptionService;
-
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.List;
+
 
 public class HomeController extends BaseController {
 
@@ -16,7 +16,7 @@ public class HomeController extends BaseController {
         if (req.getMethod().equalsIgnoreCase("post"))
             subscribe(req.getParameter("email"));
         else
-            getView();
+            getMainPage();
     }
 
     private void subscribe(final String email) throws ServletException, IOException {
@@ -30,10 +30,10 @@ public class HomeController extends BaseController {
             }
         }
 
-        getView();
+        getMainPage();
     }
 
-    private void getView() throws ServletException, IOException {
+    private void getMainPage() throws ServletException, IOException {
         CategoriesService categoriesService = CategoriesService.getInstance();
 
         String error = "";
@@ -42,8 +42,8 @@ public class HomeController extends BaseController {
 
             req.setAttribute("categories", roots);
             req.setAttribute("subCategories", categoriesService.getSubCategories(roots));
-            req.setAttribute("items", ItemsService.getInstance().getMainPageItems());
-        } catch (final RuntimeException exc) {
+            req.setAttribute("products", ProductService.getInstance().popularProducts());
+        } catch (final Exception exc) {
             exc.printStackTrace();
             error = exc.getMessage();
         }

@@ -1,22 +1,57 @@
 package com.techstore.entities;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import javax.persistence.*;
+
+
+@Entity
+@Table(name = "users")
 public class User {
-    private String id;
-    private String hashedId;
+    @JsonIgnore
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @JsonIgnore
+    @Column(name = "hashed_id")
+    private String hashedId = "";
+
     private String name;
+
+    @JsonIgnore
     private String email;
+
+    @JsonIgnore
+    @Column(name = "password")
     private String pass;
-    private String phoneNumber;
-    private String city;
-    private String street;
-    private Boolean subscribed;
+
+    @JsonIgnore
+    @Column(name = "phone_number")
+    private String phoneNumber = "";
+
+    @JsonIgnore
+    private String city = "";
+
+    @JsonIgnore
+    private String street = "";
+
+    @JsonIgnore
+    private Boolean subscribe = true;
+
 
     public User() {}
+    public User(final String email, final String name,
+                final String password, final Boolean subscribe) {
+        this.name = name;
+        this.email = email;
+        this.pass = password;
+        this.subscribe = subscribe;
+    }
+
 
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -24,7 +59,6 @@ public class User {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -32,7 +66,6 @@ public class User {
     public String getPass() {
         return pass;
     }
-
     public void setPass(String pass) {
         this.pass = pass;
     }
@@ -40,7 +73,6 @@ public class User {
     public String getPhoneNumber() {
         return phoneNumber;
     }
-
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
@@ -48,7 +80,6 @@ public class User {
     public String getCity() {
         return city;
     }
-
     public void setCity(String city) {
         this.city = city;
     }
@@ -56,32 +87,41 @@ public class User {
     public String getStreet() {
         return street;
     }
-
     public void setStreet(String street) {
         this.street = street;
     }
 
-    public String getID() {
+    public Integer getID() {
         return id;
     }
-
-    public void setID(String id) {
+    public void setID(Integer id) {
         this.id = id;
     }
 
     public String getHashedID() {
         return hashedId;
     }
-
     public void setHashedID(String hashedId) {
         this.hashedId = hashedId;
     }
 
     public Boolean isSubscribed() {
-        return subscribed;
+        return subscribe;
+    }
+    public void setSubscribed(Boolean subscribed) {
+        this.subscribe = subscribed;
     }
 
-    public void setSubscribed(Boolean subscribed) {
-        this.subscribed = subscribed;
+    @Override
+    public String toString() {
+        return String.format("User { " +
+                "ID: %d, " +
+                "Name: %s, " +
+                "Password: %s, " +
+                "Email: %s, " +
+                "City: %s, " +
+                "Street: %s, " +
+                "Phone Number: %s, " +
+                "Subscribe: %b }", id, name, pass, email, city, street, phoneNumber, subscribe);
     }
 }

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -11,8 +10,6 @@
   <packaging>war</packaging>
 
   <name>TechnoShop Maven Webapp</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.technostore.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -44,13 +41,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
-    <dependency>
-      <groupId>com.zaxxer</groupId>
-      <artifactId>HikariCP</artifactId>
-      <version>3.3.1</version>
-    </dependency>
-
     <!-- https://mvnrepository.com/artifact/jstl/jstl -->
     <dependency>
       <groupId>jstl</groupId>
@@ -69,7 +59,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
 
@@ -113,17 +103,37 @@
       <artifactId>jersey-json</artifactId>
       <version>1.19.4</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>5.4.12.Final</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-hikaricp</artifactId>
+      <version>5.2.6.Final</version>
+
+      <exclusions>
+        <exclusion>
+          <artifactId>hibernate-core</artifactId>
+          <groupId>org.hibernate</groupId>
+        </exclusion>
+      </exclusions>
+
+    </dependency>
   </dependencies>
+
 
   <build>
     <finalName>TechnoShop</finalName>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+    <pluginManagement>
       <plugins>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.1.0</version>
         </plugin>
-        <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging -->
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.0.2</version>

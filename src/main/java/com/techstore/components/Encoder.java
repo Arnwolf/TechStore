@@ -9,8 +9,8 @@ public class Encoder {
         return BCrypt.hashpw(userPassword, BCrypt.gensalt());
     }
 
-    public String hashUserId(final String userId) {
-        return BCrypt.hashpw(userId, BCrypt.gensalt(4));
+    public String hashUserId(final Integer userId) {
+        return BCrypt.hashpw(String.valueOf(userId), BCrypt.gensalt(4));
     }
 
     public boolean isPasswordsMatch(final String userPassword, final String userHashedPassword) {

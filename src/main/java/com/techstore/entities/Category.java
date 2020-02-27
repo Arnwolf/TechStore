@@ -1,41 +1,37 @@
 package com.techstore.entities;
 
+import javax.persistence.*;
+
+
+@Entity
+@Table(name = "categories")
 public class Category {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     private String name;
-    private String id;
-    private String parentCategoryId;
 
-    public Category() {}
+    @ManyToOne
+    @JoinColumn(name = "parent_category_id")
+    private Category parentCategory = null;
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public void setName(String name) { this.name = name; }
+    public String getName() { return name; }
 
-    public void setParentCategoryID(String parentCategoryId) {
-        this.parentCategoryId = parentCategoryId;
-    }
+    public void setId(Integer id) { this.id = id; }
+    public Integer getId() { return id; }
 
-    public String getName() {
-        return name;
-    }
+    public void setParentCategory(Category parentCategory) { this.parentCategory = parentCategory; }
+    public Category getParentCategory() { return parentCategory; }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getParentCategoryId() {
-        return parentCategoryId;
-    }
 
     @Override
     public String toString() {
-        return String.format("ID : %s \n" +
-                "Name : %s \n" +
-                "ParentCategoryID : %s\n", id, name, parentCategoryId);
+        return String.format("Category { " +
+                "ID : %s, " +
+                "Name : %s, " +
+                "ParentCategoryID : %s }", id, name, parentCategory);
     }
-
 }

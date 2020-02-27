@@ -1,11 +1,10 @@
 package com.techstore.controllers;
 
-import com.techstore.components.Encoder;
 import com.techstore.entities.User;
 import com.techstore.providers.RegistrationProvider;
-
 import javax.servlet.ServletException;
 import java.io.IOException;
+
 
 public class RegistrationController extends BaseController {
 
@@ -26,16 +25,11 @@ public class RegistrationController extends BaseController {
         final String repeatPass = req.getParameter("psw-repeat") == null ? "" : req.getParameter("psw-repeat");
         final String subscribe = req.getParameter("subscribe") == null ? "off" : req.getParameter("subscribe");
 
-        RegistrationProvider provider = new RegistrationProvider(new Encoder());
         String error = "";
 
-        User newUser = new User();
-        newUser.setEmail(email);
-        newUser.setPass(pass);
-        newUser.setSubscribed(subscribe.equals("on"));
-        newUser.setName(userName);
+        User newUser = new User(email, userName, pass, subscribe.equals("on"));
         try {
-            provider.register(newUser, repeatPass);
+            RegistrationProvider.register(newUser, repeatPass);
         } catch (final RuntimeException exc) {
             error = exc.getMessage();
         }

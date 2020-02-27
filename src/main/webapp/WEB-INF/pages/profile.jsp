@@ -1,4 +1,3 @@
-<jsp:useBean id="isSubscribed" scope="request" type="java.lang.Boolean"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
@@ -24,6 +23,8 @@
 
 
 <body>
+<jsp:useBean id="isSubscribed" scope="request" type="java.lang.Boolean"/>
+
 <div class="container">
     <jsp:useBean id="errors" scope="request" type="java.util.List"/>
     <c:if test="${not empty errors}">
@@ -100,15 +101,11 @@
                             </form>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-
 </body>
 </html>
 

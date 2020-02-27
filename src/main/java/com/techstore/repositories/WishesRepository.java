@@ -1,70 +1,70 @@
 package com.techstore.repositories;
 
-import com.techstore.entities.WishedItem;
-import com.techstore.jdbc.ConnectionPool;
-import com.techstore.specifications.SqlSpecification;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import com.techstore.connection.ConnectionManager;
+import com.techstore.entities.Wish;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 
-public class WishesRepository implements Repository<WishedItem> {
 
-    @Override
-    public void add(final WishedItem entity) throws SQLException {
-        try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement query = connection.prepareStatement(
-                     "INSERT INTO users_wishes(user_id, item_id) VALUES(?, ?)")) {
-            query.setInt(1, Integer.parseInt(entity.getUserId()));
-            query.setString(2, entity.getId());
-            query.execute();
-        }
+public class WishesRepository {
+
+    public void add(final Wish entity) {
+        EntityManager entityManager = ConnectionManager.getConnection();
+        entityManager.getTransaction().begin();
+
+        entityManager.persist(entity);
+
+        if (entityManager.getTransaction().isActive())
+            entityManager.getTransaction().commit();
+
+        entityManager.close();
     }
 
-    @Override
-    public void update(final WishedItem entity) {
-        throw new UnsupportedOperationException();
+    public void update(final Wish entity) { throw new UnsupportedOperationException(); }
+
+    public void remove(final Wish entity) {
+        EntityManager entityManager = ConnectionManager.getConnection();
+        entityManager.getTransaction().begin();
+
+        Wish toRemove = entityManager.merge(entity);
+        entityManager.remove(toRemove);
+
+        if (entityManager.getTransaction().isActive())
+            entityManager.getTransaction().commit();
+
+        entityManager.close();
     }
 
-    @Override
-    public void remove(final WishedItem entity) throws SQLException {
-        try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement query = connection.prepareStatement(
-                     "DELETE FROM users_wishes WHERE user_id=? AND item_id=?")) {
-            query.setString(1, entity.getUserId());
-            query.setString(2, entity.getId());
+    public List<Wish> findByUserId(final Integer userId) {
+        EntityManager connection = ConnectionManager.getConnection();
+        connection.getTransaction().begin();
 
-            query.execute();
-        }
+        List<Wish> wishes = connection.createQuery(
+                String.format("SELECT w FROM Wish w WHERE w.user=%d", userId),
+                Wish.class).getResultList();
+
+        if (connection.getTransaction().isActive())
+            connection.getTransaction().commit();
+
+        connection.close();
+
+        return wishes;
     }
 
-    @Override
-    public List<WishedItem> query(final SqlSpecification specification) throws SQLException {
-        try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement query = connection.prepareStatement(specification.toSql())) {
-            query.execute();
+    public List<Wish> findByItemId(final Integer productId) {
+        EntityManager connection = ConnectionManager.getConnection();
+        connection.getTransaction().begin();
 
-            ResultSet result = query.getResultSet();
-            List<WishedItem> items = new ArrayList<>();
+        List<Wish> wishes = connection.createQuery(
+                String.format("SELECT w FROM Wish w WHERE w.product=%d", productId),
+                Wish.class).getResultList();
 
-            while (result.next()) {
-                WishedItem item = new WishedItem();
-                item.setId(result.getString("id"));
-                item.setCategoryId(result.getString("category_id"));
-                item.setAvailability(result.getInt("availability"));
-                item.setManufacturer(result.getString("manufacturer"));
-                item.setName(result.getString("name"));
-                item.setPrice(result.getBigDecimal("price"));
-                item.setMainPhoto(result.getString("main_photo"));
-                item.setDiscount(result.getBigDecimal("discount"));
+        if (connection.getTransaction().isActive())
+            connection.getTransaction().commit();
 
-                items.add(item);
-            }
+        connection.close();
 
-            return items;
-        }
+        return wishes;
     }
 }

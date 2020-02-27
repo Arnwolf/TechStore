@@ -1,10 +1,12 @@
 package com.techstore.controllers;
 
-
+import com.techstore.dto.ProductDTO;
 import com.techstore.entities.Category;
+import com.techstore.entities.Review;
 import com.techstore.services.CategoriesService;
-import com.techstore.services.DetailedItemsService;
-
+import com.techstore.services.ProductDetailsService;
+import com.techstore.services.ProductService;
+import com.techstore.services.UsersService;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+
 public class ProductController extends BaseController {
 
     @Override
@@ -21,30 +24,31 @@ public class ProductController extends BaseController {
         if (req.getMethod().equalsIgnoreCase("post"))
             createReview();
         else
-            getDetails();
+            showProduct();
     }
 
-    private void getDetails() throws ServletException, IOException {
+    private void showProduct() throws ServletException, IOException {
         Map<String, String> searchedParams = new TreeMap<>();
-        searchedParams.put("ItemID", req.getParameter("ItemID") == null ?
-                "" : req.getParameter("ItemID"));
-        searchedParams.put("name", req.getParameter("name") == null ?
-                "" : req.getParameter("name"));
-        searchedParams.put("parameter", req.getParameter("parameter") == null ?
-                "" : req.getParameter("parameter"));
+        searchedParams.put("ItemID",          req.getParameter("ItemID"));
+        searchedParams.put("categoryParamId", req.getParameter("categoryParamId"));
+        searchedParams.put("itemParamValue",  req.getParameter("itemParamValue"));
 
         CategoriesService categoriesService = CategoriesService.getInstance();
-        DetailedItemsService detailedItemsService = DetailedItemsService.getInstance();
+        ProductService itemsService = ProductService.getInstance();
+        ProductDetailsService productDetailsService = ProductDetailsService.getInstance();
 
         List<String> errors = req.getAttribute("errors") == null
                 ? new ArrayList<>() : (ArrayList<String>)req.getAttribute("errors");
 
         try {
-            List<Category> roots = categoriesService.getRootCategories();
+            final List<Category> roots = categoriesService.getRootCategories();
+            ProductDTO product = itemsService.detailedSearchedProduct(searchedParams);
 
             req.setAttribute("categories", roots);
             req.setAttribute("subCategories", categoriesService.getSubCategories(roots));
-            req.setAttribute("detailedItem", detailedItemsService.getSearchedDetailedItem(searchedParams));
+            req.setAttribute("detailedProduct", product);
+
+            productDetailsService.updateViewedTimes(product.getProduct().getId());
         } catch(final RuntimeException exc) {
             exc.printStackTrace();
             errors.add(exc.getMessage());
@@ -84,19 +88,22 @@ public class ProductController extends BaseController {
             return;
         }
 
-        DetailedItemsService detailedItemsService = DetailedItemsService.getInstance();
+        ProductService itemsService = ProductService.getInstance();
+        UsersService usersService = UsersService.getInstance();
+
+        Review review = new Review(usersService.loadUserByHashedId((String)session.getAttribute("UserID")),
+                itemsService.product(Integer.parseInt(itemId)),
+                req.getParameter("review-text"),
+                Integer.parseInt(req.getParameter("score")),
+                LocalDateTime.now());
 
         try {
-            detailedItemsService.addReview(itemId,
-                    (String)session.getAttribute("UserID"),
-                    Integer.parseInt(req.getParameter("score")),
-                    req.getParameter("review-text"),
-                    LocalDateTime.now());
+            itemsService.addReview(review);
         } catch (final RuntimeException exc) {
             errors.add(exc.getMessage());
             req.setAttribute("errors", errors);
         }
 
-        forward("product");
+        showProduct();
     }
 }

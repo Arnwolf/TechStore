@@ -1,52 +1,119 @@
 package com.techstore.repositories;
 
+import com.techstore.connection.ConnectionManager;
 import com.techstore.entities.Category;
-import com.techstore.jdbc.ConnectionPool;
-import com.techstore.specifications.SqlSpecification;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import javax.persistence.EntityManager;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class CategoryRepository implements Repository<Category> {
 
-    @Override
-    public void add(final Category entity) {
-        throw new UnsupportedOperationException();
+public class CategoryRepository {
+
+    public Category findByID(final Integer categoryId) {
+        EntityManager entityManager = ConnectionManager.getConnection();
+        entityManager.getTransaction().begin();
+
+        Category category = entityManager.find(Category.class, categoryId);
+
+        if (entityManager.getTransaction().isActive())
+            entityManager.getTransaction().commit();
+
+        entityManager.close();
+
+        return category;
     }
 
-    @Override
-    public void update(final Category entity) {
-        throw new UnsupportedOperationException();
+    public List<Category> findByParentIDs(final Collection<Integer> categoryIds) {
+        EntityManager entityManager = ConnectionManager.getConnection();
+        entityManager.getTransaction().begin();
+
+        List<Category> categories = entityManager.createQuery(
+                String.format("SELECT c FROM Category c WHERE c.parentCategory IN (%s)",
+                        categoryIds.stream()
+                                .map(String::valueOf)
+                                .collect(Collectors.joining(","))),
+                Category.class).getResultList();
+
+        if (entityManager.getTransaction().isActive())
+            entityManager.getTransaction().commit();
+
+        entityManager.close();
+
+        return categories;
     }
 
-    @Override
-    public void remove(final Category entity) {
-        throw new UnsupportedOperationException();
+    public List<Category> findAll() {
+        EntityManager connection = ConnectionManager.getConnection();
+        connection.getTransaction().begin();
+
+        List<Category> categories = connection.createQuery(
+                "SELECT c FROM Category c",
+                Category.class).getResultList();
+
+        if (connection.getTransaction().isActive())
+            connection.getTransaction().commit();
+
+        connection.close();
+        return categories;
     }
 
-    @Override
-    public List<Category> query(final SqlSpecification specification) throws SQLException {
-        try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement query = connection.prepareStatement(specification.toSql())) {
-            query.execute();
-            ResultSet result = query.getResultSet();
+    public List<Category> findRoots() {
+        EntityManager connection = ConnectionManager.getConnection();
+        connection.getTransaction().begin();
 
-            List<Category> list = new ArrayList<>();
-            while (result.next()) {
-                Category category = new Category();
-                category.setId(result.getString("id"));
-                category.setName(result.getString("name"));
-                category.setParentCategoryID(result.getString("parent_category_id"));
+        List<Category> categories = connection.createQuery(
+                "SELECT c FROM Category c WHERE c.parentCategory IS NULL",
+                Category.class).getResultList();
 
-                list.add(category);
-            }
+        if (connection.getTransaction().isActive())
+            connection.getTransaction().commit();
 
-            return list;
-        }
+        connection.close();
+        return categories;
+    }
+
+    public List<Category> findByParentID(final Integer parentCategory) {
+        return findByParentIDs(Arrays.asList(parentCategory));
+    }
+
+    public void add(final Category newCategory) {
+        EntityManager entityManager = ConnectionManager.getConnection();
+        entityManager.getTransaction().begin();
+
+        entityManager.persist(newCategory);
+
+        if (entityManager.getTransaction().isActive())
+            entityManager.getTransaction().commit();
+
+        entityManager.close();
+    }
+
+    public void delete(final Category category) {
+        EntityManager entityManager = ConnectionManager.getConnection();
+        entityManager.getTransaction().begin();
+
+        Category toRemove = entityManager.merge(category);
+        entityManager.remove(toRemove);
+
+        if (entityManager.getTransaction().isActive())
+            entityManager.getTransaction().commit();
+
+        entityManager.close();
+    }
+
+    public Category update(final Category category) {
+        EntityManager entityManager = ConnectionManager.getConnection();
+        entityManager.getTransaction().begin();
+
+        final Category merged = entityManager.merge(category);
+
+        if (entityManager.getTransaction().isActive())
+            entityManager.getTransaction().commit();
+
+        entityManager.close();
+
+        return merged;
     }
 }

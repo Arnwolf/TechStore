@@ -1,0 +1,28 @@
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+    <!-- Define persistence unit -->
+    <persistence-unit name="tech-store-unit">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+            <exclude-unlisted-classes>false</exclude-unlisted-classes>
+            <properties>
+                <property name="javax.persistence.schema-generation.database.action" value="none"/>
+                <property name="hibernate.format_sql" value="true"/>
+                <property name="hibernate.use_sql_comments" value="true"/>
+                <property name="hibernate.show_sql" value="true" />
+
+
+                <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+                <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver" />
+                <property name="hibernate.connection.url"
+                          value="jdbc:mysql://127.0.0.1:3306/techstore?allowPublicKeyRetrieval=true&amp;useSSL=false&amp;serverTimezone=UTC" />
+                <property name="hibernate.connection.username" value="root" />
+                <property name="hibernate.hikari.minimumIdle" value="5" />
+                <property name="hibernate.hikari.maximumPoolSize" value="10" />
+                <property name="hibernate.hikari.idleTimeout" value="30000" />
+                <property name="hibernate.connection.provider_class" value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider" />
+                <property name="hibernate.connection.password" value="101297" />
+
+            </properties>
+    </persistence-unit>
+</persistence>

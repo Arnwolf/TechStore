@@ -1,94 +1,94 @@
 package com.techstore.components;
 
-import com.techstore.entities.Item;
-import com.techstore.services.ItemsService;
-
+import com.techstore.entities.Product;
+import com.techstore.services.ProductService;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.*;
 
+
 public class ShoppingCart {
     private HttpSession session;
-    private Map<String, Integer> itemsQuantity; // <id, quantity>
+    private Map<Integer, Integer> productsQuantity; // <id, quantity>
     private BigDecimal totalAmount;
 
     public ShoppingCart(@NotNull final HttpSession session) {
         this.session = session;
 
-        itemsQuantity = session.getAttribute("bin") != null ?
-                (TreeMap<String, Integer>)session.getAttribute("bin") : new TreeMap<>();
+        productsQuantity = session.getAttribute("bin") != null ?
+                (TreeMap<Integer, Integer>)session.getAttribute("bin") : new TreeMap<>();
 
         totalAmount = new BigDecimal("0.00", new MathContext(2));
 
-        List<Item> items = ItemsService.getInstance().getItems(itemsQuantity.keySet());
+        if (!productsQuantity.isEmpty()) {
+            List<Product> products = ProductService.getInstance().products(productsQuantity.keySet());
 
-        for (Item item : items) {
-            totalAmount = totalAmount
-                    .add(item.getPrice().subtract(item.getDiscount()))
-                    .multiply(BigDecimal.valueOf(itemsQuantity.get(item.getId())));
+            for (Product product : products) {
+                totalAmount = totalAmount
+                        .add(product.getPrice().subtract(product.getDiscount()))
+                        .multiply(BigDecimal.valueOf(productsQuantity.get(product.getId())));
+            }
         }
     }
 
-    public Integer getQuantity(final String itemId) {
-        return itemsQuantity.get(itemId);
-    }
+    public Integer getQuantity(final Integer productId) { return productsQuantity.get(productId); }
 
-    public void addItem(final String itemId, final Integer quantity) {
-        if (itemsQuantity.containsKey(itemId)) {
-            Integer boughtQuantity = itemsQuantity.get(itemId);
+    public void addProduct(final Integer productId, final Integer quantity) {
+        if (productsQuantity.containsKey(productId)) {
+            Integer boughtQuantity = productsQuantity.get(productId);
             boughtQuantity += quantity;
-            itemsQuantity.put(itemId, boughtQuantity);
+            productsQuantity.put(productId, boughtQuantity);
         } else
-            itemsQuantity.put(itemId, quantity);
+            productsQuantity.put(productId, quantity);
 
-        Item addedItem = ItemsService.getInstance().getItem(itemId);
+        Product addedProduct = ProductService.getInstance().product(productId);
 
         for (int i = 0; i < quantity; ++i)
-            totalAmount = totalAmount.add(addedItem.getPrice().subtract(addedItem.getDiscount()));
+            totalAmount = totalAmount.add(addedProduct.getPrice().subtract(addedProduct.getDiscount()));
     }
 
-    public void removeItem(final String itemId) {
-        final int quantity = itemsQuantity.get(itemId);
-        Item toRemove = ItemsService.getInstance().getItem(itemId);
+    public void removeProduct(final Integer productId) {
+        final int quantity = productsQuantity.get(productId);
+        Product toRemove = ProductService.getInstance().product(productId);
 
         for (int i = 0; i < quantity; ++i)
             totalAmount = totalAmount.subtract(toRemove.getPrice().subtract(toRemove.getDiscount()));
 
-        itemsQuantity.remove(itemId);
+        productsQuantity.remove(productId);
     }
 
-    public void removeItem(final String itemId, final int quantity) {
-        Integer cartItemQuantity = itemsQuantity.get(itemId);
+    public void removeProduct(final Integer productId, final int quantity) {
+        Integer productQuantity = productsQuantity.get(productId);
         int reduceQuantity;
 
-        if (quantity > cartItemQuantity)
-            reduceQuantity = cartItemQuantity;
+        if (quantity > productQuantity)
+            reduceQuantity = productQuantity;
         else
             reduceQuantity = quantity;
 
-        Item toRemove = ItemsService.getInstance().getItem(itemId);
+        Product toRemove = ProductService.getInstance().product(productId);
         for (int i = 0; i < reduceQuantity; ++i)
             totalAmount = totalAmount.subtract(toRemove.getPrice().subtract(toRemove.getDiscount()));
 
-        itemsQuantity.put(itemId, cartItemQuantity - reduceQuantity);
+        productsQuantity.put(productId, productQuantity - reduceQuantity);
     }
 
     public void save() {
-        session.setAttribute("bin", itemsQuantity);
+        session.setAttribute("bin", productsQuantity);
     }
 
     public boolean isCartEmpty() {
-        return itemsQuantity.isEmpty();
+        return productsQuantity.isEmpty();
     }
 
-    public Collection<String> getIds() {
-        return itemsQuantity.keySet();
+    public Collection<Integer> getIds() {
+        return productsQuantity.keySet();
     }
 
-    public Map<String, Integer> getCart() {
-        return itemsQuantity;
+    public Map<Integer, Integer> getCart() {
+        return productsQuantity;
     }
 
     public BigDecimal getTotalAmount() {

@@ -2,31 +2,24 @@ package com.techstore.controllers;
 
 import com.techstore.entities.Category;
 import com.techstore.services.CategoriesService;
-import com.techstore.services.ItemsService;
-
+import com.techstore.services.ProductService;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+
 public class ProductsController extends BaseController {
     @Override
     public void process() throws ServletException, IOException {
         Map<String, String> searchParams = new TreeMap<>();
-        searchParams.put("categoryID", req.getParameter("categoryID") == null ?
-                "" : req.getParameter("categoryID"));
+        searchParams.put("categoryID",      req.getParameter("categoryID"));
+        searchParams.put("categoryParamId", req.getParameter("categoryParamId")); //category_parameter_id
+        searchParams.put("itemParamValue",  req.getParameter("itemParamValue"));
+        searchParams.put("search",          req.getParameter("search"));
 
-        searchParams.put("ParamID", req.getParameter("ParamID") == null ?
-                "" : req.getParameter("ParamID"));
-
-        searchParams.put("ParamValue", req.getParameter("ParamValue") == null ?
-                "" : req.getParameter("ParamValue"));
-
-        searchParams.put("search", req.getParameter("search") == null ?
-                "" : req.getParameter("search"));
-
-        ItemsService itemsService = ItemsService.getInstance();
+        ProductService productService = ProductService.getInstance();
         CategoriesService categoriesService = CategoriesService.getInstance();
 
         try {
@@ -34,7 +27,7 @@ public class ProductsController extends BaseController {
 
             req.setAttribute("categories", roots);
             req.setAttribute("subCategories", categoriesService.getSubCategories(roots));
-            req.setAttribute("items", itemsService.getSearchedItems(searchParams));
+            req.setAttribute("products", productService.searchedProducts(searchParams));
         } catch (final RuntimeException exc ) {
             exc.printStackTrace();
         }

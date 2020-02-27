@@ -2,32 +2,28 @@ package com.techstore.controllers;
 
 
 import com.techstore.components.ShoppingCart;
+import com.techstore.entities.Order;
 import com.techstore.entities.User;
 import com.techstore.services.OrdersService;
 import com.techstore.services.UsersService;
-
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class CheckoutController extends BaseController {
 
     @Override
     public void process() throws ServletException, IOException {
-        switch (req.getMethod().toLowerCase()) {
-            case "post": {
-                createOrder();
-                break;
-            }
-            case "get": {
-                getOrderForm();
-                break;
-            }
-        }
+        if (req.getMethod().toLowerCase().equalsIgnoreCase("post"))
+            createOrder();
+        else
+            showOrderForm();
     }
 
-    private void getOrderForm() throws ServletException, IOException {
+    private void showOrderForm() throws ServletException, IOException {
         final String userId = (String)req.getSession().getAttribute("UserID");
 
         List<String> errors = new ArrayList<>();
@@ -59,7 +55,7 @@ public class CheckoutController extends BaseController {
             if (req.getParameter(param) == null || req.getParameter(param).isEmpty()) {
                 errors.add("Please, fill field %s right!");
                 req.setAttribute("errors", errors);
-                process();
+                showOrderForm();
                 return;
             }
         }
@@ -67,29 +63,31 @@ public class CheckoutController extends BaseController {
         ShoppingCart cart = new ShoppingCart(req.getSession());
 
         if (cart.isCartEmpty()) {
-            resp.sendRedirect("bin");
+            resp.sendRedirect("cart");
             return;
         }
 
-        User user = new User();
-        user.setEmail(req.getParameter("email"));
-        user.setStreet(req.getParameter("street"));
-        user.setCity(req.getParameter("city"));
-        user.setName(req.getParameter("name"));
-        user.setPhoneNumber(req.getParameter("phone"));
+        Order newOrder = new Order();
+        newOrder.setClientPhoneNumber(req.getParameter("phone"));
+        newOrder.setClientName(req.getParameter("name"));
+        newOrder.setStreet(req.getParameter("street"));
+        newOrder.setCity(req.getParameter("city"));
+        newOrder.setEmail(req.getParameter("email"));
+        newOrder.setCreationDate(LocalDateTime.now());
 
         OrdersService ordersService = OrdersService.getInstance();
+        boolean status = true;
 
         try {
-            ordersService.createOrder(cart, user);
+            ordersService.createOrder(cart, newOrder);
+            req.getSession().setAttribute("bin", null);
         } catch (final RuntimeException exc) {
             errors.add(exc.getMessage());
-            req.setAttribute("errors", errors);
-            getOrderForm();
-            return;
+            status = false;
+            req.setAttribute("message", exc.getMessage());
         }
 
-        req.getSession().setAttribute("bin", null);
+        req.setAttribute("message", status ? "Order was created!" : "Error occurred!");
         forward("successful");
     }
 }

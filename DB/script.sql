@@ -3,7 +3,7 @@ create table categories
     id                 int(4) auto_increment
         primary key,
     name               varchar(40) not null,
-    parent_category_id int(4)      not null,
+    parent_category_id int(4)      null,
     constraint categories_Name_uindex
         unique (name)
 );
@@ -87,7 +87,8 @@ create table orders
     phone_number  varchar(13)                   not null,
     client_name   varchar(40)                   not null,
     creation_date datetime                      not null,
-    status        varchar(20) default 'pending' not null
+    status        varchar(20) default 'pending' not null,
+    email         varchar(35)                   not null
 );
 
 create table orders_items
@@ -101,11 +102,12 @@ create table orders_items
         foreign key (item_id) references items (id),
     constraint orders_items_orders_ID_fk
         foreign key (order_id) references orders (id)
+            on delete cascade
 );
 
 create table subscription
 (
-    id    int(3) auto_increment
+    id    int(4) auto_increment
         primary key,
     email varchar(40) not null
 );
@@ -147,7 +149,7 @@ create table item_reviews
 
 create table users_wishes
 (
-    id      int(3) auto_increment
+    id      int(4) auto_increment
         primary key,
     user_id int(3) not null,
     item_id int(3) not null,

@@ -1,107 +1,110 @@
 package com.techstore.repositories;
 
+import com.techstore.connection.ConnectionManager;
 import com.techstore.entities.User;
-import com.techstore.jdbc.ConnectionPool;
-import com.techstore.specifications.SqlSpecification;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 
-public class UserRepository implements Repository<User> {
 
-    @Override
-    public void add(final User entity) throws SQLException {
+public class UserRepository {
 
-        try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement createStatement = connection.prepareStatement(
-                     "INSERT INTO users(email, password, subscribe, name) VALUES(?,?,?,?)")) {
-            createStatement.setString(1, entity.getEmail());
-            createStatement.setString(2, entity.getPass());
-            createStatement.setBoolean(3, entity.isSubscribed());
-            createStatement.setString(4, entity.getName());
-            createStatement.execute();
-        }
+    public void add(final User user) {
+        EntityManager connection = ConnectionManager.getConnection();
+        connection.getTransaction().begin();
+
+        connection.persist(user);
+
+        if (connection.getTransaction().isActive())
+            connection.getTransaction().commit();
+
+        connection.close();
     }
 
-    @Override
-    public void update(final User entity) throws SQLException {
-        StringBuilder query = new StringBuilder("UPDATE users SET ");
-        boolean isFirstAppend = false;
+    public void update(final User user) {
+        EntityManager connection = ConnectionManager.getConnection();
+        connection.getTransaction().begin();
 
-        if (entity.getHashedID() != null) {
-            query.append(String.format("hashed_id='%s'", entity.getHashedID()));
-            isFirstAppend = true;
-        }
-        if (entity.getPass() != null) {
-            query.append(String.format("%spassword='%s'", isFirstAppend ? "," : "", entity.getPass()));
-            isFirstAppend = true;
-        }
-        if (entity.getPhoneNumber() != null) {
-            query.append(String.format("%sphone_number='%s'", isFirstAppend ? "," : "", entity.getPhoneNumber()));
-            isFirstAppend = true;
-        }
-        if (entity.getEmail() != null) {
-            query.append(String.format("%semail='%s'", isFirstAppend ? "," : "", entity.getEmail()));
-            isFirstAppend = true;
-        }
-        if (entity.getName() != null) {
-            query.append(String.format("%sname='%s'", isFirstAppend ? "," : "", entity.getName()));
-            isFirstAppend = true;
-        }
-        if (entity.getStreet() != null) {
-            query.append(String.format("%sstreet='%s'", isFirstAppend ? "," : "", entity.getStreet()));
-            isFirstAppend = true;
-        }
-        if (entity.getCity() != null) {
-            query.append(String.format("%scity='%s'", isFirstAppend ? "," : "", entity.getCity()));
-            isFirstAppend = true;
-        }
-        if (entity.isSubscribed() != null) {
-            query.append(String.format("%ssubscribe=%b", isFirstAppend ? "" : ",", entity.isSubscribed()));
-        }
+        connection.merge(user);
 
-        query.append(String.format(" WHERE id=%s", entity.getID()));
+        if (connection.getTransaction().isActive())
+            connection.getTransaction().commit();
 
-        try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query.toString())) {
-            statement.execute();
-        }
+        connection.close();
     }
 
-    @Override
-    public void remove(final User entity) {
-        throw new UnsupportedOperationException();
+    public void remove(final User user) {
+        EntityManager connection = ConnectionManager.getConnection();
+        connection.getTransaction().begin();
+
+        connection.remove(user);
+
+        if (connection.getTransaction().isActive())
+            connection.getTransaction().commit();
+
+        connection.close();
     }
 
-    @Override
-    public List<User> query(final SqlSpecification spec) throws SQLException {
-        try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(spec.toSql())) {
-            statement.execute();
+    public List<User> findAll() {
+        EntityManager connection = ConnectionManager.getConnection();
+        connection.getTransaction().begin();
 
-            ResultSet result = statement.getResultSet();
+        List<User> users = connection.createQuery("SELECT user FROM User user",
+                User.class).getResultList();
 
-            List<User> users = new ArrayList<>();
-            while (result.next()) {
-                User user = new User();
-                user.setEmail(result.getString("email"));
-                user.setPass(result.getString("password"));
-                user.setName(result.getString("name"));
-                user.setCity(result.getString("city"));
-                user.setStreet(result.getString("street"));
-                user.setPhoneNumber(result.getString("phone_number"));
-                user.setID(result.getString("id"));
+        if (connection.getTransaction().isActive())
+            connection.getTransaction().commit();
 
-                user.setSubscribed(result.getBoolean("subscribe"));
+        connection.close();
 
-                users.add(user);
-            }
+        return users;
+    }
 
-            return users;
-        }
+    public List<User> findByEmail(final String email) {
+        EntityManager connection = ConnectionManager.getConnection();
+        connection.getTransaction().begin();
+
+        List<User> users = connection.createQuery(
+                String.format("SELECT user FROM User user WHERE user.email='%s'", email),
+                User.class).getResultList();
+
+        if (connection.getTransaction().isActive())
+            connection.getTransaction().commit();
+
+        connection.close();
+
+        return users;
+    }
+
+    public List<User> findByHashedId(final String hashedId) {
+        EntityManager connection = ConnectionManager.getConnection();
+        connection.getTransaction().begin();
+
+        List<User> users = connection.createQuery(
+                String.format("SELECT user FROM User user WHERE user.hashedId='%s'", hashedId),
+                User.class).getResultList();
+
+        if (connection.getTransaction().isActive())
+            connection.getTransaction().commit();
+
+        connection.close();
+
+        return users;
+    }
+
+    public List<User> findByName(final String userName) {
+        EntityManager connection = ConnectionManager.getConnection();
+        connection.getTransaction().begin();
+
+        List<User> users = connection.createQuery(
+                String.format("SELECT user FROM User user WHERE user.name='%s'", userName),
+                User.class).getResultList();
+
+        if (connection.getTransaction().isActive())
+            connection.getTransaction().commit();
+
+        connection.close();
+
+        return users;
     }
 }

@@ -1,22 +1,16 @@
 package com.techstore.providers;
 
+
 import com.techstore.components.Encoder;
 import com.techstore.entities.User;
 import com.techstore.services.SubscriptionService;
 import com.techstore.services.UsersService;
 
-import javax.validation.constraints.NotNull;
 
 public class RegistrationProvider {
-    private UsersService usersService;
-    private Encoder encoder;
+    public static void register(final User newUser, final String repeatPass) throws RuntimeException {
+        UsersService usersService = UsersService.getInstance();
 
-    public RegistrationProvider(@NotNull final Encoder encoder) {
-        this.usersService = UsersService.getInstance();
-        this.encoder = encoder;
-    }
-
-    public void register(final User newUser, final String repeatPass) throws RuntimeException {
         if (newUser.getPass().isEmpty() || repeatPass.isEmpty())
             throw new RuntimeException("Fill the passwords field!");
         else if (newUser.getName().isEmpty())
@@ -32,11 +26,10 @@ public class RegistrationProvider {
         else if (usersService.loadUserByName(newUser.getName()) != null)
             throw new RuntimeException("There is already registered user with same name!");
         else {
-            newUser.setPass(encoder.hashPassword(newUser.getPass()));
-            usersService.registerUser(newUser);
+            newUser.setPass(new Encoder().hashPassword(newUser.getPass()));
 
-            SubscriptionService subscriptionService = SubscriptionService.getInstance();
-            subscriptionService.unsubscribe(newUser.getEmail());
+            SubscriptionService.getInstance().unsubscribe(newUser.getEmail());
+            usersService.addUser(newUser);
         }
     }
 }
