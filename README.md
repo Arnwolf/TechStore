@@ -10,7 +10,9 @@ This is education project which uses next technologies:
 4) JSP and JSTL.
 
 
-# Database Server
+# Database
+Server: MySQL 8
+
 On the next screen you can see database relationships.
 
 ![](DB/techstore.png)
