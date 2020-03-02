@@ -52,8 +52,4 @@ public class OrderRepository {
 
         connection.close();
     }
-
-    public void update(final Order entity) { throw new UnsupportedOperationException(); }
-
-    public void remove(final Order entity) { throw new UnsupportedOperationException(); }
 }

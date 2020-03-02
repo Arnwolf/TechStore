@@ -16,7 +16,7 @@ public class UserInfoChecker {
 
         if (!newInfo.getEmail().isEmpty() && !originalInfo.getEmail().equals(newInfo.getEmail())) {
             if (usersService.loadUserByEmail(newInfo.getEmail()) != null)
-                throw new RuntimeException("This email is already taken by another user!");
+                throw new RuntimeException("This email is not available!");
             else
                 originalInfo.setEmail(newInfo.getEmail());
         }

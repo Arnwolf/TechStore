@@ -3,10 +3,8 @@ package com.techstore.controllers;
 import com.techstore.dto.ProductDTO;
 import com.techstore.entities.Category;
 import com.techstore.entities.Review;
-import com.techstore.services.CategoriesService;
-import com.techstore.services.ProductDetailsService;
-import com.techstore.services.ProductService;
-import com.techstore.services.UsersService;
+import com.techstore.services.*;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -47,8 +45,6 @@ public class ProductController extends BaseController {
             req.setAttribute("categories", roots);
             req.setAttribute("subCategories", categoriesService.getSubCategories(roots));
             req.setAttribute("detailedProduct", product);
-
-            productDetailsService.updateViewedTimes(product.getProduct().getId());
         } catch(final RuntimeException exc) {
             exc.printStackTrace();
             errors.add(exc.getMessage());
@@ -98,7 +94,7 @@ public class ProductController extends BaseController {
                 LocalDateTime.now());
 
         try {
-            itemsService.addReview(review);
+            ReviewsService.getInstance().addReview(review);
         } catch (final RuntimeException exc) {
             errors.add(exc.getMessage());
             req.setAttribute("errors", errors);

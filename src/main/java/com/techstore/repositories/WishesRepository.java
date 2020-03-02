@@ -21,8 +21,6 @@ public class WishesRepository {
         entityManager.close();
     }
 
-    public void update(final Wish entity) { throw new UnsupportedOperationException(); }
-
     public void remove(final Wish entity) {
         EntityManager entityManager = ConnectionManager.getConnection();
         entityManager.getTransaction().begin();

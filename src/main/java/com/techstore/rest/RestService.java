@@ -4,6 +4,7 @@ import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJsonProvi
 import org.glassfish.jersey.server.ResourceConfig;
 import javax.ws.rs.ApplicationPath;
 
+
 @ApplicationPath(value = "api")
 public class RestService extends ResourceConfig {
 

@@ -2,13 +2,7 @@ package com.techstore.services;
 
 import com.techstore.components.ShoppingCart;
 import com.techstore.entities.Order;
-import com.techstore.entities.OrderProduct;
-import com.techstore.entities.Product;
-import com.techstore.entities.ProductDetail;
 import com.techstore.repositories.OrderRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 

@@ -45,21 +45,6 @@ public class UserRepository {
         connection.close();
     }
 
-    public List<User> findAll() {
-        EntityManager connection = ConnectionManager.getConnection();
-        connection.getTransaction().begin();
-
-        List<User> users = connection.createQuery("SELECT user FROM User user",
-                User.class).getResultList();
-
-        if (connection.getTransaction().isActive())
-            connection.getTransaction().commit();
-
-        connection.close();
-
-        return users;
-    }
-
     public List<User> findByEmail(final String email) {
         EntityManager connection = ConnectionManager.getConnection();
         connection.getTransaction().begin();

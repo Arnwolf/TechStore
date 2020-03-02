@@ -24,30 +24,12 @@ public class SubscriptionRepository {
         EntityManager entityManager = ConnectionManager.getConnection();
         entityManager.getTransaction().begin();
 
-        //entityManager
-                //.createQuery(String.format("DELETE FROM Subscription s WHERE s.email='%s'", email), Subscription.class)
-                //.executeUpdate();
         entityManager.remove(subscription);
 
         if (entityManager.getTransaction().isActive())
             entityManager.getTransaction().commit();
 
         entityManager.close();
-    }
-
-    public List<Subscription> findAll() {
-        EntityManager entityManager = ConnectionManager.getConnection();
-        entityManager.getTransaction().begin();
-
-        List<Subscription> subscriptions = entityManager.createQuery("SELECT s FROM Subscription s",
-                Subscription.class).getResultList();
-
-        if (entityManager.getTransaction().isActive())
-            entityManager.getTransaction().commit();
-
-        entityManager.close();
-
-        return subscriptions;
     }
 
     public Subscription findByEmail(final String email) {

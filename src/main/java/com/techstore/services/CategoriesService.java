@@ -14,32 +14,6 @@ public class CategoriesService {
 
     private CategoriesService() { }
 
-    private void addCategory(final Category category) {
-        try {
-            categoryRepository.add(category);
-        } catch (final RuntimeException exc) {
-            exc.printStackTrace();
-            throw new RuntimeException("SQL Problems");
-        }
-    }
-
-    private void removeCategory(final Category category) {
-        try {
-            categoryRepository.delete(category);
-        } catch (final RuntimeException exc) {
-            exc.printStackTrace();
-            throw new RuntimeException("SQL Problems");
-        }
-    }
-
-    private void updateCategory(final Category category) {
-        try {
-            categoryRepository.update(category);
-        } catch (final RuntimeException exc) {
-            exc.printStackTrace();
-            throw new RuntimeException("SQL Problems");
-        }
-    }
 
     public List<Category> getRootCategories() { return categoryRepository.findRoots(); }
 
@@ -66,10 +40,7 @@ public class CategoriesService {
         return categoriesTree;
     }
 
-
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
-    }
+    public List<Category> getAllCategories() { return categoryRepository.findAll(); }
 
     public List<Category> getSearchedCategories(final Map<String, String> paramMap) {
         final String categoryID = paramMap.get("categoryID");

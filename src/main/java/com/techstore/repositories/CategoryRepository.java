@@ -11,20 +11,6 @@ import java.util.stream.Collectors;
 
 public class CategoryRepository {
 
-    public Category findByID(final Integer categoryId) {
-        EntityManager entityManager = ConnectionManager.getConnection();
-        entityManager.getTransaction().begin();
-
-        Category category = entityManager.find(Category.class, categoryId);
-
-        if (entityManager.getTransaction().isActive())
-            entityManager.getTransaction().commit();
-
-        entityManager.close();
-
-        return category;
-    }
-
     public List<Category> findByParentIDs(final Collection<Integer> categoryIds) {
         EntityManager entityManager = ConnectionManager.getConnection();
         entityManager.getTransaction().begin();
@@ -76,44 +62,5 @@ public class CategoryRepository {
 
     public List<Category> findByParentID(final Integer parentCategory) {
         return findByParentIDs(Arrays.asList(parentCategory));
-    }
-
-    public void add(final Category newCategory) {
-        EntityManager entityManager = ConnectionManager.getConnection();
-        entityManager.getTransaction().begin();
-
-        entityManager.persist(newCategory);
-
-        if (entityManager.getTransaction().isActive())
-            entityManager.getTransaction().commit();
-
-        entityManager.close();
-    }
-
-    public void delete(final Category category) {
-        EntityManager entityManager = ConnectionManager.getConnection();
-        entityManager.getTransaction().begin();
-
-        Category toRemove = entityManager.merge(category);
-        entityManager.remove(toRemove);
-
-        if (entityManager.getTransaction().isActive())
-            entityManager.getTransaction().commit();
-
-        entityManager.close();
-    }
-
-    public Category update(final Category category) {
-        EntityManager entityManager = ConnectionManager.getConnection();
-        entityManager.getTransaction().begin();
-
-        final Category merged = entityManager.merge(category);
-
-        if (entityManager.getTransaction().isActive())
-            entityManager.getTransaction().commit();
-
-        entityManager.close();
-
-        return merged;
     }
 }

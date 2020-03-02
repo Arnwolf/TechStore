@@ -2,9 +2,7 @@ package com.techstore.repositories;
 
 import com.techstore.connection.ConnectionManager;
 import com.techstore.entities.Product;
-
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -92,21 +90,6 @@ public class ProductRepository {
         List<Product> items = connection.createQuery(
                 String.format("SELECT p FROM Product p WHERE CONCAT(p.manufacturer, ' ', p.name) LIKE '%s%%' " +
                         "OR CONCAT(p.manufacturer, ' ', p.Name) LIKE '%%%s'", productName, productName),
-                Product.class).getResultList();
-
-        if (connection.getTransaction().isActive())
-            connection.getTransaction().commit();
-
-        connection.close();
-
-        return items;
-    }
-
-    public List<Product> findAll() {
-        EntityManager connection = ConnectionManager.getConnection();
-        connection.getTransaction().begin();
-
-        List<Product> items = connection.createQuery("SELECT p FROM Product p",
                 Product.class).getResultList();
 
         if (connection.getTransaction().isActive())
