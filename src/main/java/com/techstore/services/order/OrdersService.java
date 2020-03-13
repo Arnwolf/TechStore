@@ -3,7 +3,6 @@ package com.techstore.services.order;
 import com.techstore.dto.CreateOrderDto;
 import com.techstore.entities.Order;
 import com.techstore.services.product.ProductDetailsService;
-import java.time.LocalDateTime;
 import java.util.Map;
 
 
@@ -24,7 +23,12 @@ public class OrdersService {
 
         OrderStatus(final int statusCode) { code = statusCode; }
 
-        public int status() { return code; }
+        public String status() {
+            if (code == 0)
+                return "pending";
+            else
+                return "";
+        }
     }
 
     public void createOrder(final CreateOrderDto order) {
@@ -36,8 +40,8 @@ public class OrdersService {
                 order.clientName,
                 order.clientPhoneNumber,
                 order.clientEmail,
-                LocalDateTime.now(),
-                OrdersService.OrderStatus.PENDING.status());
+                order.creationDate,
+                order.status);
 
         orderRepository.add(newOrder, order.orderProducts);
 

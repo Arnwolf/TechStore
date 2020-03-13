@@ -40,20 +40,19 @@ public class Order {
     private LocalDateTime creationDate;
     public LocalDateTime getCreationDate() { return creationDate; }
 
-    private int status;
-    public int getStatus() { return status; }
-    public void setStatus(final int status) { this.status = status; }
+    private String status;
+    public String getStatus() { return status; }
+    public void setStatus(final String status) { this.status = status; }
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<OrderProduct> orderProducts = new ArrayList<>();
-    public void setOrderProducts(final List<OrderProduct> orderProducts) { this.orderProducts = orderProducts; }
     public List<OrderProduct> getOrderProducts() { return orderProducts; }
 
     public Order() {}
 
     public Order(final BigDecimal totalAmount, final String city, final String street,
                  final String clientName, final String clientPhoneNumber, final String email,
-                 final LocalDateTime creationDate, final int status) {
+                 final LocalDateTime creationDate, final String status) {
         this.totalAmount = totalAmount;
         this.city = city;
         this.status = status;

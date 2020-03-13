@@ -23,8 +23,6 @@ class OrderRepository {
                                 .collect(Collectors.joining(","))),
                 Product.class).getResultList();
 
-        List<OrderProduct> orderProducts = new ArrayList<>();
-
         for (Product product : products) {
             if (product.getAvailability() < productIdsAndQuantities.get(product.getId())) {
                 if (connection.getTransaction().isActive()) {
@@ -37,14 +35,12 @@ class OrderRepository {
 
                 OrderProduct orderProduct = new OrderProduct(order, product,
                         productIdsAndQuantities.get(product.getId()));
-                orderProducts.add(orderProduct);
+
+                order.getOrderProducts().add(orderProduct);
             }
         }
 
         connection.persist(order);
-
-        for (OrderProduct orderProduct : orderProducts)
-            connection.persist(orderProduct);
 
         if (connection.getTransaction().isActive())
             connection.getTransaction().commit();

@@ -13,7 +13,7 @@ public class CreateOrderDto {
     public String clientPhoneNumber;
     public String clientEmail;
     public LocalDateTime creationDate;
-    public int status;
+    public String status;
 
     public Map<Integer, Integer> orderProducts; //<id, quantity>
 }

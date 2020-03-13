@@ -1,6 +1,5 @@
 package com.techstore.controllers;
 
-
 import com.techstore.components.ShoppingCart;
 import com.techstore.dto.CreateOrderDto;
 import com.techstore.dto.UserDto;
@@ -24,6 +23,7 @@ public class CheckoutController extends BaseController {
 
     private void showOrderForm() throws ServletException, IOException {
         final String userId = (String)req.getSession().getAttribute("UserID");
+        String error = "";
 
         if (userId != null) {
             UserService userServiceImpl = UserServiceImpl.getInstance();
@@ -37,10 +37,11 @@ public class CheckoutController extends BaseController {
                 req.setAttribute("email", user.email);
             } catch (final RuntimeException exc) {
                 exc.printStackTrace();
+                error = exc.getMessage();
             }
         }
 
-        req.setAttribute("error", "");
+        req.setAttribute("error", error);
         forward("checkout");
     }
 
@@ -70,6 +71,7 @@ public class CheckoutController extends BaseController {
         dto.clientEmail = req.getParameter("email");
         dto.clientName = req.getParameter("name");
         dto.clientPhoneNumber = req.getParameter("phone");
+        dto.street = req.getParameter("street");
         dto.creationDate = LocalDateTime.now();
         dto.status = OrdersService.OrderStatus.PENDING.status();
         dto.totalAmount = cart.getTotalAmount();

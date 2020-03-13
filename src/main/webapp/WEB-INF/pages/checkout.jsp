@@ -13,13 +13,11 @@
 
 <body>
 <div class="container">
-    <jsp:useBean id="errors" scope="request" type="java.util.List"/>
-    <c:if test="${not empty errors}">
+    <jsp:useBean id="error" scope="request" type="java.lang.String"/>
+    <c:if test="${not empty error}">
         <div class="alert alert-danger alert-dismissible fade show">
             <strong>Error!</strong>
-            <c:forEach items="${errors}" var="error">
                 ${error}
-            </c:forEach>
             <button type="button" class="close" data-dismiss="alert">&times;</button>
         </div>
     </c:if>
