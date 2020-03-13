@@ -14,11 +14,6 @@
             line-height: 24px;
         color: #656565;
         }
-
-        .h3-price {
-            color: rgb(20, 80, 150);
-            font-family: 'Oxygen Mono', monospace;
-        }
     </style>
 </head>
 

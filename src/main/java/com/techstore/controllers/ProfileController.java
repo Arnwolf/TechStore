@@ -1,13 +1,11 @@
 package com.techstore.controllers;
 
-import com.techstore.entities.User;
-import com.techstore.services.UsersService;
-
+import com.techstore.dto.UserDto;
+import com.techstore.services.user.UserService;
+import com.techstore.services.user.UserServiceImpl;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class ProfileController extends BaseController {
@@ -21,52 +19,52 @@ public class ProfileController extends BaseController {
     }
 
     private void updateProfile() throws ServletException, IOException {
-        User newInfo = new User();
-        newInfo.setName(req.getParameter("name"));
-        newInfo.setPass(req.getParameter("psw") == null ? "" : req.getParameter("psw"));
-        newInfo.setEmail(req.getParameter("email"));
-        newInfo.setPhoneNumber(req.getParameter("phone"));
-        newInfo.setStreet(req.getParameter("street"));
-        newInfo.setCity(req.getParameter("city"));
-        newInfo.setHashedID((String)req.getSession(false).getAttribute("UserID"));
-        newInfo.setSubscribed(req.getParameter("subscribe").equals("on"));
 
-        List<String> errors = new ArrayList<>();
-        UsersService userService = UsersService.getInstance();
+        UserDto updatedProfile = new UserDto();
+        updatedProfile.city = req.getParameter("city");
+        updatedProfile.email = req.getParameter("email");
+        updatedProfile.name = req.getParameter("name");
+        updatedProfile.phoneNumber = req.getParameter("phone");
+        updatedProfile.hashedId = (String)req.getSession(false).getAttribute("UserID");
+        updatedProfile.subscribe = req.getParameter("subscribe").equals("on");
+        updatedProfile.street = req.getParameter("street");
+        updatedProfile.pass = req.getParameter("newpass") == null ? "" : req.getParameter("newpass");
+
+
+
+        String error = "";
+        UserService userService = UserServiceImpl.getInstance();
 
         try {
-            userService.updateUserInfo(newInfo);
+            userService.updateProfile(updatedProfile);
         } catch (final RuntimeException exc) {
-            errors.add(exc.getMessage());
+            error = exc.getMessage();
             exc.printStackTrace();
         }
 
-        req.setAttribute("errors", errors);
+        req.setAttribute("error", error);
         getInfoPage();
     }
 
     private void getInfoPage() throws ServletException, IOException {
         HttpSession session = req.getSession();
 
-        List<String> errors = new ArrayList<>();
-        UsersService userService = UsersService.getInstance();
+        String error = "";
+        UserService userService = UserServiceImpl.getInstance();
         try {
-            User user = userService.loadUserByHashedId((String)session.getAttribute("UserID"));
+            UserDto user = userService.getUserProfile((String)session.getAttribute("UserID"));
 
-            req.setAttribute("name", user.getName());
-            req.setAttribute("email", user.getEmail());
-            req.setAttribute("city", user.getCity());
-            req.setAttribute("phone", user.getPhoneNumber());
-            req.setAttribute("street", user.getStreet());
-            req.setAttribute("isSubscribed", user.isSubscribed());
+            req.setAttribute("name", user.name);
+            req.setAttribute("email", user.email);
+            req.setAttribute("city", user.city);
+            req.setAttribute("phone", user.phoneNumber);
+            req.setAttribute("street", user.street);
+            req.setAttribute("isSubscribed", user.subscribe);
         } catch (final RuntimeException exc) {
-            errors.add(exc.getMessage());
+            error = exc.getMessage();
         }
 
-        if (req.getAttribute("errors") != null && !((List)req.getAttribute("errors")).isEmpty())
-            errors.addAll((ArrayList<String>)req.getAttribute("errors"));
-
-        req.setAttribute("errors", errors);
+        req.setAttribute("error", error);
         forward("profile");
     }
 }

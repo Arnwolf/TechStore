@@ -9,16 +9,20 @@ public class OrderProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    public Integer getId() { return id; }
 
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
+    public Order getOrder() { return order; }
 
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Product product;
+    public Product getProduct() { return product; }
 
     private Integer quantity;
+    public Integer getQuantity() { return quantity; }
 
 
     public OrderProduct() {}
@@ -27,17 +31,4 @@ public class OrderProduct {
         this.product = product;
         this.quantity = quantity;
     }
-
-
-    public void setId(final Integer id) { this.id = id; }
-    public Integer getId() { return id; }
-
-    public void setOrder(final Order order) { this.order = order; }
-    public Order getOrder() { return order; }
-
-    public void setProduct(final Product product) { this.product = product; }
-    public Product getProduct() { return product; }
-
-    public void setQuantity(final Integer quantity) { this.quantity = quantity; }
-    public Integer getQuantity() { return quantity; }
 }

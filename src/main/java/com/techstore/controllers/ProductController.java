@@ -1,15 +1,17 @@
 package com.techstore.controllers;
 
-import com.techstore.dto.ProductDTO;
+
+import com.techstore.dto.CreateReviewDto;
 import com.techstore.entities.Category;
-import com.techstore.entities.Review;
-import com.techstore.services.*;
+import com.techstore.services.category.CategoriesService;
+import com.techstore.services.product.ProductService;
+import com.techstore.services.product.ProductServiceImpl;
+import com.techstore.services.review.ReviewServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,81 +27,80 @@ public class ProductController extends BaseController {
             showProduct();
     }
 
+    private Map<String, String> collectParameters() {
+        Map<String, String> params = new TreeMap<>();
+        params.put("ItemID",          req.getParameter("ItemID"));
+        params.put("categoryParamId", req.getParameter("categoryParamId"));
+        params.put("itemParamValue",  req.getParameter("itemParamValue"));
+
+        return params;
+    }
+
     private void showProduct() throws ServletException, IOException {
-        Map<String, String> searchedParams = new TreeMap<>();
-        searchedParams.put("ItemID",          req.getParameter("ItemID"));
-        searchedParams.put("categoryParamId", req.getParameter("categoryParamId"));
-        searchedParams.put("itemParamValue",  req.getParameter("itemParamValue"));
-
         CategoriesService categoriesService = CategoriesService.getInstance();
-        ProductService itemsService = ProductService.getInstance();
-        ProductDetailsService productDetailsService = ProductDetailsService.getInstance();
-
-        List<String> errors = req.getAttribute("errors") == null
-                ? new ArrayList<>() : (ArrayList<String>)req.getAttribute("errors");
-
         try {
             final List<Category> roots = categoriesService.getRootCategories();
-            ProductDTO product = itemsService.detailedSearchedProduct(searchedParams);
+            ProductService productService = ProductServiceImpl.getInstance();
+
+            if (req.getParameter("ItemID") != null) {
+                final int productId = Integer.parseInt(req.getParameter("ItemID"));
+
+                req.setAttribute("detailedProduct", productService.findById(productId));
+            }
 
             req.setAttribute("categories", roots);
             req.setAttribute("subCategories", categoriesService.getSubCategories(roots));
-            req.setAttribute("detailedProduct", product);
         } catch(final RuntimeException exc) {
             exc.printStackTrace();
-            errors.add(exc.getMessage());
         }
 
-        boolean isReviewingGranted = false;
-        if (req.getSession().getAttribute("UserID") != null)
-            isReviewingGranted = true;
-
-        req.setAttribute("errors", errors);
-        req.setAttribute("reviewGranted", isReviewingGranted);
+        req.setAttribute("error", "");
+        req.setAttribute("reviewGranted", req.getSession().getAttribute("UserID") != null);
         forward("product");
+    }
+
+    private void validateReview() {
+        if (req.getParameter("ItemID").isEmpty()
+                || req.getParameter("review-text").isEmpty()
+                || req.getParameter("score").isEmpty())
+            throw new RuntimeException("Please, fill all fields correctly!");
     }
 
     private void createReview() throws ServletException, IOException {
         HttpSession session = req.getSession();
-        List<String> errors = new ArrayList<>();
+        String error = "";
 
         if (session.getAttribute("UserID") == null) {
-            errors.add("You need to be authorized!");
-            req.setAttribute("errors", errors);
-            process();
+            error = "You need to be authorized!";
+            req.setAttribute("error", error);
+            showProduct();
             return;
         }
-
-        final String itemId = req.getParameter("ItemID") != null ?
-                req.getParameter("ItemID") : "";
-        final String comment = req.getParameter("review-text") != null ?
-                req.getParameter("review-text") : "";
-        final String score = req.getParameter("score") != null ?
-                req.getParameter("score") : "";
-
-        if (itemId.isEmpty() || comment.isEmpty() || score.isEmpty()) {
-            errors.add("Please, fill all fields correctly!");
-            req.setAttribute("errors", errors);
-            process();
-            return;
-        }
-
-        ProductService itemsService = ProductService.getInstance();
-        UsersService usersService = UsersService.getInstance();
-
-        Review review = new Review(usersService.loadUserByHashedId((String)session.getAttribute("UserID")),
-                itemsService.product(Integer.parseInt(itemId)),
-                req.getParameter("review-text"),
-                Integer.parseInt(req.getParameter("score")),
-                LocalDateTime.now());
 
         try {
-            ReviewsService.getInstance().addReview(review);
+            validateReview();
         } catch (final RuntimeException exc) {
-            errors.add(exc.getMessage());
-            req.setAttribute("errors", errors);
+            exc.printStackTrace();
+            error = exc.getMessage();
+            req.setAttribute("error", error);
+            showProduct();
+            return;
         }
 
+        final int productId = Integer.parseInt(req.getParameter("ItemID"));
+        final String comment = req.getParameter("review-text");
+        final int score = Integer.parseInt(req.getParameter("score"));
+        final String userHashedId = (String)req.getSession().getAttribute("UserID");
+
+        CreateReviewDto dto = new CreateReviewDto();
+        dto.rating = score;
+        dto.description = comment;
+        dto.creationDate = LocalDateTime.now();
+        dto.productId = productId;
+        dto.userHahsedId = userHashedId;
+
+        ReviewServiceImpl.getInstance().create(dto);
+        req.setAttribute("error", error);
         showProduct();
     }
 }

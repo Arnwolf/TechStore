@@ -51,12 +51,12 @@
                 <div class="row cart-row">
                     <div class="col-xs-12 col-sm-2">
                         <div class="pull-left">
-                            <a href="cart/remove?ItemID=${item.product.id}">
+                            <a href="wishes/remove?ItemID=${item.product.id}">
                                 <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                             </a>
                         </div>
                         <a href="product?ItemID=${item.product.id}">
-                            <img src="${item.product.mainPhoto}" alt="" class="img-responsive">
+                            <img src="${item.product.photo}" alt="" class="img-responsive">
                         </a>
                     </div>
 

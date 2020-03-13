@@ -1,28 +1,37 @@
 package com.techstore.entities;
 
+import org.hibernate.annotations.Immutable;
+
 import javax.persistence.*;
 
 
 @Entity
 @Table(name = "category_parameters")
+@Immutable
 public class CategoryParameter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    public Integer getId() { return id; }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+    public Category getCategory() { return category; }
 
     @Column(name = "parameter_name")
     private String name;
+    public String getName() { return name; }
 
     @Column(name = "parameter_symbol")
     private String symbol = "";
+    public String getSymbol() { return symbol; }
 
     private Boolean searchable = false;
+    public Boolean getSearchable() { return searchable; }
 
     private Boolean changeable = false;
+    public Boolean getChangeable() { return changeable; }
 
     public CategoryParameter() {}
     public CategoryParameter(final Category category, final String name,
@@ -34,23 +43,4 @@ public class CategoryParameter {
         this.symbol = symbol;
         this.searchable = searchable;
     }
-
-
-    public Integer getId() { return id; }
-    public void setId(final Integer id) { this.id = id; }
-
-    public String getName() { return name; }
-    public void setName(final String name) { this.name = name; }
-
-    public String getSymbol() { return symbol; }
-    public void setSymbol(final String symbol) { this.symbol = symbol; }
-
-    public Boolean getSearchable() { return searchable; }
-    public void setSearchable(final Boolean searchable) { this.searchable = searchable; }
-
-    public Boolean getChangeable() { return changeable; }
-    public void setChangeable(final Boolean changeable) { this.changeable = changeable; }
-
-    public Category getCategory() { return category; }
-    public void setCategory(Category category) { this.category = category; }
 }

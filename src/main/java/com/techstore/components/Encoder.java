@@ -3,8 +3,6 @@ package com.techstore.components;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class Encoder {
-    public Encoder() {}
-
     public String hashPassword(final String userPassword) {
         return BCrypt.hashpw(userPassword, BCrypt.gensalt());
     }

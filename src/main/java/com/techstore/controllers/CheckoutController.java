@@ -2,15 +2,15 @@ package com.techstore.controllers;
 
 
 import com.techstore.components.ShoppingCart;
+import com.techstore.dto.CreateOrderDto;
+import com.techstore.dto.UserDto;
 import com.techstore.entities.Order;
-import com.techstore.entities.User;
-import com.techstore.services.OrdersService;
-import com.techstore.services.UsersService;
+import com.techstore.services.order.OrdersService;
+import com.techstore.services.user.UserService;
+import com.techstore.services.user.UserServiceImpl;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class CheckoutController extends BaseController {
@@ -26,23 +26,22 @@ public class CheckoutController extends BaseController {
     private void showOrderForm() throws ServletException, IOException {
         final String userId = (String)req.getSession().getAttribute("UserID");
 
-        List<String> errors = new ArrayList<>();
         if (userId != null) {
-            UsersService usersService = UsersService.getInstance();
+            UserService userServiceImpl = UserServiceImpl.getInstance();
             try {
-                User user = usersService.loadUserByHashedId(userId);
+                final UserDto user = userServiceImpl.getUserProfile(userId);
 
-                req.setAttribute("name", user.getName());
-                req.setAttribute("phone", user.getPhoneNumber());
-                req.setAttribute("street", user.getStreet());
-                req.setAttribute("city", user.getCity());
-                req.setAttribute("email", user.getEmail());
+                req.setAttribute("name", user.name);
+                req.setAttribute("phone", user.phoneNumber);
+                req.setAttribute("street", user.street);
+                req.setAttribute("city", user.city);
+                req.setAttribute("email", user.email);
             } catch (final RuntimeException exc) {
-                errors.add(exc.getMessage());
+                exc.printStackTrace();
             }
         }
 
-        req.setAttribute("errors", errors);
+        req.setAttribute("error", "");
         forward("checkout");
     }
 
@@ -50,11 +49,11 @@ public class CheckoutController extends BaseController {
     private void createOrder() throws ServletException, IOException {
         final String[] requiredParams = {"name", "phone", "street", "city", "email"};
 
-        List<String> errors = new ArrayList<>();
+        String error = "";
         for (final String param : requiredParams) {
             if (req.getParameter(param) == null || req.getParameter(param).isEmpty()) {
-                errors.add("Please, fill field %s right!");
-                req.setAttribute("errors", errors);
+                error = String.format("Please, fill field %s right!", param);
+                req.setAttribute("error", error);
                 showOrderForm();
                 return;
             }
@@ -67,27 +66,26 @@ public class CheckoutController extends BaseController {
             return;
         }
 
-        Order newOrder = new Order();
-        newOrder.setClientPhoneNumber(req.getParameter("phone"));
-        newOrder.setClientName(req.getParameter("name"));
-        newOrder.setStreet(req.getParameter("street"));
-        newOrder.setCity(req.getParameter("city"));
-        newOrder.setEmail(req.getParameter("email"));
-        newOrder.setCreationDate(LocalDateTime.now());
+        CreateOrderDto dto = new CreateOrderDto();
+        dto.city = req.getParameter("city");
+        dto.clientEmail = req.getParameter("email");
+        dto.clientName = req.getParameter("name");
+        dto.clientPhoneNumber = req.getParameter("phone");
+        dto.creationDate = LocalDateTime.now();
+        dto.status = OrdersService.OrderStatus.PENDING.status();
+        dto.totalAmount = cart.getTotalAmount();
+        dto.orderProducts = cart.getCart();
 
         OrdersService ordersService = OrdersService.getInstance();
-        boolean status = true;
-
         try {
-            ordersService.createOrder(cart, newOrder);
+            ordersService.createOrder(dto);
             req.getSession().setAttribute("bin", null);
         } catch (final RuntimeException exc) {
-            errors.add(exc.getMessage());
-            status = false;
-            req.setAttribute("message", exc.getMessage());
+            exc.printStackTrace();
+            error = exc.getMessage();
         }
 
-        req.setAttribute("message", status ? "Order was created!" : "Error occurred!");
+        req.setAttribute("message", error.isEmpty() ? "Order was created!" : error);
         forward("successful");
     }
 }

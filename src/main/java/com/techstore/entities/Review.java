@@ -10,10 +10,12 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    public Integer getId() { return id; }
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
+    public User getUser() { return user; }
 
     private String description;
 
@@ -25,6 +27,7 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Product item;
+    public Product getItem() { return item; }
 
 
     public Review() {}
@@ -39,27 +42,15 @@ public class Review {
     }
 
 
-    public Integer getId() { return id; }
-    public void setId(final Integer id) { this.id = id; }
-
-    public User getUser() { return user; }
-    public void setUser(final User user) { this.user = user; }
-
     public String getDescription() { return description; }
-    public void setDescription(final String description) {
-        this.description = description;
-    }
+    public void setDescription(final String description) { this.description = description; }
 
     public Integer getRating() { return rating; }
-    public void setRating(final Integer rating) {
-        this.rating = rating;
-    }
+    public void setRating(final Integer rating) { this.rating = rating; }
 
     public LocalDateTime getCreationDate() { return creationDate; }
     public void setCreationDate(final LocalDateTime creationDate) { this.creationDate = creationDate; }
 
-    public Product getItem() { return item; }
-    public void setItem(final Product item) { this.item = item; }
 
     @Override
     public String toString() {
@@ -68,6 +59,6 @@ public class Review {
                 "User Name: %s" +
                 "User ID: %d" +
                 "Rating: %d" +
-                "Description: %s }", id, user.getName(), user.getID(), rating, description);
+                "Description: %s }", id, user.getName(), user.getId(), rating, description);
     }
 }

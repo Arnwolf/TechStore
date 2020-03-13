@@ -1,20 +1,26 @@
 package com.techstore.entities;
 
+import org.hibernate.annotations.Immutable;
+
 import javax.persistence.*;
 
 
 @Entity
 @Table(name = "item_photos")
+@Immutable
 public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    public Integer getId() { return id; }
 
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Product product;
+    public Product getProduct() { return product; }
 
     private String photo;
+    public String getPhoto() { return photo; }
 
 
     public Photo() {}
@@ -22,13 +28,4 @@ public class Photo {
         this.photo = photo;
         this.product = product;
     }
-
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
-
-    public Product getProduct() { return product; }
-    public void setProduct(Product product) { this.product = product; }
-
-    public String getPhoto() { return photo; }
-    public void setPhoto(String photo) { this.photo = photo; }
 }

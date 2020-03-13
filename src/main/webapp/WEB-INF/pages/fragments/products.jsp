@@ -4,11 +4,11 @@
     <jsp:useBean id="products" scope="request" type="java.util.List"/>
     <c:forEach items="${products}" var="product">
         <div class="col-lg-4 col-md-6 col-xl-3" <c:if test="${product.availability == 0}">style="opacity: 0.5;"</c:if>>
-            <c:if test="${product.isNew() == true}">
+            <c:if test="${product.isNew == true}">
                 <span class="badge badge-secondary align-top">NEW</span>
             </c:if>
 
-            <img onclick="location.href = 'product?ItemID=${product.id}'" src="${product.mainPhoto}" class="rounded img-fluid" style="max-height: 40%" alt="">
+            <img onclick="location.href = 'product?ItemID=${product.id}'" src="${product.photo}" class="rounded img-fluid" style="max-height: 40%" alt="">
 
             <c:choose>
                 <c:when test="${product.discount > 0}">
@@ -20,7 +20,7 @@
                 </c:otherwise>
             </c:choose>
 
-            <p>${product.category.name}</p>
+            <p>${product.categoryName}</p>
             <h5>${product.manufacturer} ${product.name}</h5>
 
             <c:if test="${product.availability != 0}">

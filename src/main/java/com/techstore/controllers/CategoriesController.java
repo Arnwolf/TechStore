@@ -1,8 +1,7 @@
 package com.techstore.controllers;
 
 import com.techstore.entities.Category;
-import com.techstore.services.CategoriesService;
-
+import com.techstore.services.category.CategoriesService;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.List;
@@ -19,7 +18,6 @@ public class CategoriesController extends BaseController {
                 "" : req.getParameter("categoryID"));
 
         CategoriesService categoriesService = CategoriesService.getInstance();
-        String error = "";
         try {
             List<Category> roots = categoriesService.getRootCategories();
 
@@ -34,10 +32,9 @@ public class CategoriesController extends BaseController {
                 return;
             }
         } catch(final RuntimeException exc) {
-            error = exc.getMessage();
+            exc.printStackTrace();
         }
 
-        req.setAttribute("error", error);
         forward("categories");
     }
 }

@@ -1,7 +1,7 @@
 package com.techstore.components;
 
-import com.techstore.entities.Product;
-import com.techstore.services.ProductService;
+import com.techstore.dto.PreviewProductDto;
+import com.techstore.services.product.ProductServiceImpl;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -23,12 +23,12 @@ public class ShoppingCart {
         totalAmount = new BigDecimal("0.00", new MathContext(2));
 
         if (!productsQuantity.isEmpty()) {
-            List<Product> products = ProductService.getInstance().products(productsQuantity.keySet());
+            List<PreviewProductDto> products = ProductServiceImpl.getInstance().findByIds(productsQuantity.keySet());
 
-            for (Product product : products) {
+            for (PreviewProductDto product : products) {
                 totalAmount = totalAmount
-                        .add(product.getPrice().subtract(product.getDiscount()))
-                        .multiply(BigDecimal.valueOf(productsQuantity.get(product.getId())));
+                        .add(product.price.subtract(product.discount))
+                        .multiply(BigDecimal.valueOf(productsQuantity.get(product.id)));
             }
         }
     }
@@ -43,18 +43,18 @@ public class ShoppingCart {
         } else
             productsQuantity.put(productId, quantity);
 
-        Product addedProduct = ProductService.getInstance().product(productId);
+        PreviewProductDto addedProduct = ProductServiceImpl.getInstance().findById(productId).product;
 
         for (int i = 0; i < quantity; ++i)
-            totalAmount = totalAmount.add(addedProduct.getPrice().subtract(addedProduct.getDiscount()));
+            totalAmount = totalAmount.add(addedProduct.price.subtract(addedProduct.discount));
     }
 
     public void removeProduct(final Integer productId) {
         final int quantity = productsQuantity.get(productId);
-        Product toRemove = ProductService.getInstance().product(productId);
+        PreviewProductDto toRemove = ProductServiceImpl.getInstance().findById(productId).product;
 
         for (int i = 0; i < quantity; ++i)
-            totalAmount = totalAmount.subtract(toRemove.getPrice().subtract(toRemove.getDiscount()));
+            totalAmount = totalAmount.subtract(toRemove.price.subtract(toRemove.discount));
 
         productsQuantity.remove(productId);
     }
@@ -68,30 +68,18 @@ public class ShoppingCart {
         else
             reduceQuantity = quantity;
 
-        Product toRemove = ProductService.getInstance().product(productId);
+        PreviewProductDto toRemove = ProductServiceImpl.getInstance().findById(productId).product;
         for (int i = 0; i < reduceQuantity; ++i)
-            totalAmount = totalAmount.subtract(toRemove.getPrice().subtract(toRemove.getDiscount()));
+            totalAmount = totalAmount.subtract(toRemove.price.subtract(toRemove.discount));
 
         productsQuantity.put(productId, productQuantity - reduceQuantity);
     }
 
-    public void save() {
-        session.setAttribute("bin", productsQuantity);
-    }
+    public void save() { session.setAttribute("bin", productsQuantity); }
 
-    public boolean isCartEmpty() {
-        return productsQuantity.isEmpty();
-    }
+    public boolean isCartEmpty() { return productsQuantity.isEmpty(); }
 
-    public Collection<Integer> getIds() {
-        return productsQuantity.keySet();
-    }
+    public Map<Integer, Integer> getCart() { return productsQuantity; }
 
-    public Map<Integer, Integer> getCart() {
-        return productsQuantity;
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
+    public BigDecimal getTotalAmount() { return totalAmount; }
 }

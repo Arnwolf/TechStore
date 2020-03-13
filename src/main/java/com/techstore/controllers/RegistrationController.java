@@ -1,7 +1,7 @@
 package com.techstore.controllers;
 
-import com.techstore.entities.User;
-import com.techstore.providers.RegistrationProvider;
+import com.techstore.dto.NewUserDto;
+import com.techstore.services.user.UserServiceImpl;
 import javax.servlet.ServletException;
 import java.io.IOException;
 
@@ -27,9 +27,15 @@ public class RegistrationController extends BaseController {
 
         String error = "";
 
-        User newUser = new User(email, userName, pass, subscribe.equals("on"));
+        NewUserDto newUser = new NewUserDto();
+        newUser.email = email;
+        newUser.isSubscribe = subscribe.equals("on");
+        newUser.pass = pass;
+        newUser.repeatedPass = repeatPass;
+        newUser.userName = userName;
+
         try {
-            RegistrationProvider.register(newUser, repeatPass);
+            UserServiceImpl.getInstance().register(newUser);
         } catch (final RuntimeException exc) {
             error = exc.getMessage();
         }

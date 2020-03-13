@@ -1,6 +1,6 @@
 package com.techstore.rest;
 
-import com.techstore.services.CategoriesService;
+import com.techstore.services.category.CategoriesService;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;

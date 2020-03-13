@@ -22,15 +22,6 @@
 <jsp:useBean id="subCategories" scope="request" type="java.util.Map"/>
 
     <div class="container">
-        <jsp:useBean id="error" scope="request" type="java.lang.String"/>
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger alert-dismissible fade show">
-                <strong>Error!</strong>
-                    ${error}
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-            </div>
-        </c:if>
-
         <c:import url="fragments/navbar.jsp">
             <c:param name="categories" value="${categories}"/>
             <c:param name="subCategories" value="${subCategories}"/>

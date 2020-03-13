@@ -3,6 +3,8 @@ package com.techstore.entities;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -11,32 +13,47 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    public Integer getId() { return id; }
 
     @Column(name = "total_amount")
     private BigDecimal totalAmount;
+    public BigDecimal getTotalAmount() { return totalAmount; }
 
     private String street;
+    public String getStreet() { return street; }
 
     private String city;
+    public String getCity() { return city; }
 
     @Column(name = "client_name")
     private String clientName;
+    public String getClientName() { return clientName; }
 
     @Column(name = "phone_number")
     private String clientPhoneNumber;
+    public String getClientPhoneNumber() { return clientPhoneNumber; }
 
     private String email;
+    public String getEmail() { return email; }
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
+    public LocalDateTime getCreationDate() { return creationDate; }
 
-    private String status;
+    private int status;
+    public int getStatus() { return status; }
+    public void setStatus(final int status) { this.status = status; }
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<OrderProduct> orderProducts = new ArrayList<>();
+    public void setOrderProducts(final List<OrderProduct> orderProducts) { this.orderProducts = orderProducts; }
+    public List<OrderProduct> getOrderProducts() { return orderProducts; }
 
     public Order() {}
 
     public Order(final BigDecimal totalAmount, final String city, final String street,
                  final String clientName, final String clientPhoneNumber, final String email,
-                 final LocalDateTime creationDate, final String status) {
+                 final LocalDateTime creationDate, final int status) {
         this.totalAmount = totalAmount;
         this.city = city;
         this.status = status;
@@ -46,31 +63,4 @@ public class Order {
         this.email = email;
         this.creationDate = creationDate;
     }
-
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
-
-    public BigDecimal getTotalAmount() { return totalAmount; }
-    public void setTotalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; }
-
-    public String getStreet() { return street; }
-    public void setStreet(String street) { this.street = street; }
-
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
-
-    public String getClientName() { return clientName; }
-    public void setClientName(String clientName) { this.clientName = clientName; }
-
-    public String getClientPhoneNumber() { return clientPhoneNumber; }
-    public void setClientPhoneNumber(String clientPhoneNumber) { this.clientPhoneNumber = clientPhoneNumber; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public LocalDateTime getCreationDate() { return creationDate; }
-    public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
 }

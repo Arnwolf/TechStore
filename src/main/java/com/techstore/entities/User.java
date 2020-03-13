@@ -1,41 +1,37 @@
 package com.techstore.entities;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 
 
 @Entity
+@DynamicUpdate
+@DynamicInsert
 @Table(name = "users")
 public class User {
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @JsonIgnore
     @Column(name = "hashed_id")
     private String hashedId = "";
 
     private String name;
 
-    @JsonIgnore
     private String email;
 
-    @JsonIgnore
     @Column(name = "password")
     private String pass;
 
-    @JsonIgnore
     @Column(name = "phone_number")
     private String phoneNumber = "";
 
-    @JsonIgnore
     private String city = "";
 
-    @JsonIgnore
     private String street = "";
 
-    @JsonIgnore
     private Boolean subscribe = true;
 
 
@@ -49,68 +45,32 @@ public class User {
     }
 
 
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getName() { return name; }
+    public void setName(final String name) { this.name = name; }
 
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(final String email) { this.email = email; }
 
-    public String getPass() {
-        return pass;
-    }
-    public void setPass(String pass) {
-        this.pass = pass;
-    }
+    public String getPass() { return pass; }
+    public void setPass(final String pass) { this.pass = pass; }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(final String phoneNumber) { this.phoneNumber = phoneNumber; }
 
-    public String getCity() {
-        return city;
-    }
-    public void setCity(String city) {
-        this.city = city;
-    }
+    public String getCity() { return city; }
+    public void setCity(final String city) { this.city = city; }
 
-    public String getStreet() {
-        return street;
-    }
-    public void setStreet(String street) {
-        this.street = street;
-    }
+    public String getStreet() { return street; }
+    public void setStreet(final String street) { this.street = street; }
 
-    public Integer getID() {
-        return id;
-    }
-    public void setID(Integer id) {
-        this.id = id;
-    }
+    public Integer getId() { return id; }
+    public void setId(final Integer id) { this.id = id; }
 
-    public String getHashedID() {
-        return hashedId;
-    }
-    public void setHashedID(String hashedId) {
-        this.hashedId = hashedId;
-    }
+    public String getHashedID() { return hashedId; }
+    public void setHashedID(final String hashedId) { this.hashedId = hashedId; }
 
-    public Boolean isSubscribed() {
-        return subscribe;
-    }
-    public void setSubscribed(Boolean subscribed) {
-        this.subscribe = subscribed;
-    }
+    public Boolean isSubscribed() { return subscribe; }
+    public void setSubscribed(final Boolean subscribed) { this.subscribe = subscribed; }
 
     @Override
     public String toString() {

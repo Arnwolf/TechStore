@@ -15,7 +15,7 @@
             <div class="error-template">
                 <h1>${message}</h1>
                 <div class="error-actions">
-                    <a href="home" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>
+                    <a href="/" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>
                         Take Me Home
                     </a>
                 </div>

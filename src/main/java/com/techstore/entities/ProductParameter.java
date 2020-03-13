@@ -9,16 +9,20 @@ public class ProductParameter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    public Integer getId() { return id; }
 
     @ManyToOne
     @JoinColumn(name = "category_parameter_id")
     private CategoryParameter categoryParameter;
+    public CategoryParameter getCategoryParameter() { return categoryParameter; }
 
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Product item;
+    public Product getItem() { return item; }
 
     private String value;
+    public String getValue() { return value; }
 
 
     public ProductParameter() {}
@@ -28,18 +32,6 @@ public class ProductParameter {
         this.value = value;
     }
 
-
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
-
-    public CategoryParameter getCategoryParameter() { return categoryParameter; }
-    public void setCategoryParameter(CategoryParameter categoryParameter) { this.categoryParameter = categoryParameter; }
-
-    public Product getItem() { return item; }
-    public void setItem(Product item) { this.item = item; }
-
-    public String getValue() { return value; }
-    public void setValue(String value) { this.value = value; }
 
     @Override
     public String toString() {

@@ -56,7 +56,7 @@
                             </a>
                         </div>
                         <a href="product?ItemID=${product.id}">
-                            <img src="${product.mainPhoto}" alt="" class="img-responsive">
+                            <img src="${product.photo}" alt="" class="img-responsive">
                         </a>
                     </div>
 

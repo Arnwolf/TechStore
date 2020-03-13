@@ -685,16 +685,13 @@
 <body>
 <jsp:useBean id="categories" scope="request" type="java.util.List"/>
 <jsp:useBean id="subCategories" scope="request" type="java.util.Map"/>
-<jsp:useBean id="detailedProduct" scope="request" type="com.techstore.dto.ProductDTO"/>
 
 <div class="container">
-    <jsp:useBean id="errors" scope="request" type="java.util.List"/>
-    <c:if test="${not empty errors}">
+    <jsp:useBean id="error" scope="request" type="java.lang.String"/>
+    <c:if test="${not empty error}">
         <div class="alert alert-danger alert-dismissible fade show">
             <strong>Error!</strong>
-            <c:forEach items="${errors}" var="error">
                 ${error}
-            </c:forEach>
             <button type="button" class="close" data-dismiss="alert">&times;</button>
         </div>
     </c:if>
@@ -711,7 +708,7 @@
                     <div class="flexslider">
                         <div class="flex-view">
                             <a id="zoom4" class="zoom" href="#">
-                                <img id="zoomed" src="${detailedProduct.product.mainPhoto}" alt="" draggable="false">
+                                <img id="zoomed" src="${detailedProduct.product.photo}" alt="" draggable="false">
                             </a>
                         </div>
 
@@ -731,7 +728,7 @@
                     <div class="product-detail">
                         <div class="header-detail">
                             <h4 class="item-name">${detailedProduct.product.manufacturer} ${detailedProduct.product.name}</h4>
-                            <div class="category"> ${detailedProduct.product.category.name}</div>
+                            <div class="category"> ${detailedProduct.product.categoryName}</div>
                             <div class="reviewed">
                                 <div class="reviews">
                                     <div class="text">
@@ -770,7 +767,7 @@
                                 <div class="colors">
                                     <select name="color">
                                         <c:forEach items="${detailedProduct.changeableParameters}" var="parameter">
-                                            <option onclick="location.href = 'product?categoryParamId=${parameter.categoryParameter.id}&itemParamValue=${parameter.value}'">${parameter.value}</option>
+                                            <option onclick="location.href = 'product?ItemID=${parameter.productId}'">${parameter.productValue}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -836,13 +833,13 @@
                             <c:forEach items="${detailedProduct.parameters}" var="parameter">
                                 <tr>
                                     <c:choose>
-                                        <c:when test="${parameter.categoryParameter.searchable == true}">
-                                            <td>${parameter.categoryParameter.name}</td>
-                                            <td onclick="location.href = '/products?categoryParamId=${parameter.categoryParameter.id}&itemParamValue=${parameter.value}';" style="color: blue; cursor: context-menu">${parameter.value}${parameter.categoryParameter.symbol}</td>
+                                        <c:when test="${parameter.isSearchable() == true}">
+                                            <td>${parameter.parameterName}</td>
+                                            <td onclick="location.href = '/products?categoryParamId=${parameter.categoryParameterId}&itemParamValue=${parameter.productValue}';" style="color: blue; cursor: context-menu">${parameter.productValue}${parameter.parameterSymbol}</td>
                                         </c:when>
                                         <c:otherwise>
-                                            <td>${parameter.categoryParameter.name}</td>
-                                            <td>${parameter.value} ${parameter.categoryParameter.symbol}</td>
+                                            <td>${parameter.parameterName}</td>
+                                            <td>${parameter.productValue} ${parameter.parameterSymbol}</td>
                                         </c:otherwise>
                                     </c:choose>
                                 </tr>
@@ -869,7 +866,7 @@
                         </div>
                         <div class="score">
                             <div class="average-score">
-                                <p class="numb">${detailedProduct.totalReviewScore}</p>
+                                <p class="numb">${detailedProduct.totalReviewsScore}</p>
                                 <p class="text">Average score</p>
                             </div>
                         </div>
@@ -906,16 +903,14 @@
                             <li>
                                 <div class="review-metadata">
                                     <div class="name">
-                                            ${review.user.name} : <span>${review.creationDate}</span>
+                                            ${review.userName} : <span>${review.creationDate}</span>
                                     </div>
                                     <div class="queue">
                                         Score: ${review.rating}
                                     </div>
                                 </div>
                                 <div class="review-content">
-                                    <p>
-                                            ${review.description}
-                                    </p>
+                                    <p>${review.comment}</p>
                                 </div>
                             </li>
                         </c:forEach>
