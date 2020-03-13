@@ -1,7 +1,6 @@
 package com.techstore.entities;
 
 import org.hibernate.annotations.Immutable;
-
 import javax.persistence.*;
 
 
@@ -27,14 +26,5 @@ public class Category {
     public Category(final String name, final Category parentCategory) {
         this.name = name;
         this.parentCategory = parentCategory;
-    }
-
-
-    @Override
-    public String toString() {
-        return String.format("Category { " +
-                "ID : %s, " +
-                "Name : %s, " +
-                "ParentCategoryID : %s }", id, name, parentCategory);
     }
 }

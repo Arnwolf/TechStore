@@ -3,7 +3,8 @@ package com.techstore.controllers;
 import com.techstore.components.ShoppingCart;
 import com.techstore.dto.CreateOrderDto;
 import com.techstore.dto.UserDto;
-import com.techstore.services.order.OrdersService;
+import com.techstore.services.order.OrderService;
+import com.techstore.services.order.OrderServiceImpl;
 import com.techstore.services.user.UserService;
 import com.techstore.services.user.UserServiceImpl;
 import javax.servlet.ServletException;
@@ -73,11 +74,11 @@ public class CheckoutController extends BaseController {
         dto.clientPhoneNumber = req.getParameter("phone");
         dto.street = req.getParameter("street");
         dto.creationDate = LocalDateTime.now();
-        dto.status = OrdersService.OrderStatus.PENDING.status();
+        dto.status = OrderServiceImpl.OrderStatus.PENDING.status();
         dto.totalAmount = cart.getTotalAmount();
         dto.orderProducts = cart.getCart();
 
-        OrdersService ordersService = OrdersService.getInstance();
+        OrderService ordersService = OrderServiceImpl.getInstance();
         try {
             ordersService.createOrder(dto);
             req.getSession().setAttribute("bin", null);

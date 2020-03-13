@@ -18,7 +18,7 @@ public class ProductDetailsService {
                 .orElseThrow(() -> new EntityNotFoundException(String.valueOf(productId)));
     }
 
-    public void updateViewedTimes(final int productId) {
+    void updateViewedTimes(final int productId) {
         ProductDetail productDetail = findDetail(productId);
 
         int viewedTimes = productDetail.getViewedTimes();

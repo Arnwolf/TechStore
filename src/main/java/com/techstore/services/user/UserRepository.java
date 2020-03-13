@@ -3,7 +3,6 @@ package com.techstore.services.user;
 import com.techstore.connection.ConnectionManager;
 import com.techstore.entities.User;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 

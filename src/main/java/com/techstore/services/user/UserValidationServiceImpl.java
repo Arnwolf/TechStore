@@ -8,8 +8,8 @@ import com.techstore.dto.UserDto;
 
 
 class UserValidationServiceImpl implements UserValidationService {
-    private static final UserValidationService validationService = new UserValidationServiceImpl();
-    public static UserValidationService getInstance() { return validationService; }
+    private static final UserValidationServiceImpl validationService = new UserValidationServiceImpl();
+    public static UserValidationServiceImpl getInstance() { return validationService; }
 
     private Validator<NewUserDto> registrationValidator = new RegistrationValidator();
     private Validator<UserDto> profileValidator = new ProfileValidator();

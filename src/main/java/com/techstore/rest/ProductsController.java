@@ -40,7 +40,9 @@ public class ProductsController {
                     .entity(itemsService.productByCriteria(ProductService.ProductsCriteria.POPULAR))
                     .build();
         } catch (final RuntimeException exc) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(exc).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(exc)
+                    .build();
         }
     }
 

@@ -1,7 +1,8 @@
 package com.techstore.controllers;
 
-import com.techstore.entities.Category;
-import com.techstore.services.category.CategoriesService;
+import com.techstore.dto.CategoryDto;
+import com.techstore.services.category.CategoryService;
+import com.techstore.services.category.CategoryServiceImpl;
 import com.techstore.services.product.ProductService;
 import com.techstore.services.product.ProductServiceImpl;
 
@@ -13,10 +14,10 @@ import java.util.List;
 public class ProductsController extends BaseController {
     @Override
     public void process() throws ServletException, IOException {
-        CategoriesService categoriesService = CategoriesService.getInstance();
+        CategoryService categoriesService = CategoryServiceImpl.getInstance();
 
         try {
-            List<Category> roots = categoriesService.getRootCategories();
+            List<CategoryDto> roots = categoriesService.getRootCategories();
 
             req.setAttribute("categories", roots);
             req.setAttribute("subCategories", categoriesService.getSubCategories(roots));

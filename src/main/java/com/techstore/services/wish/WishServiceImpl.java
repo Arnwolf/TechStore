@@ -22,7 +22,7 @@ public class WishServiceImpl implements WishService {
     private final Converter<WishDto, Wish> converter = new WishConverter();
 
     private final static WishServiceImpl instance = new WishServiceImpl();
-    public static WishService getInstance() { return instance; }
+    public static WishServiceImpl getInstance() { return instance; }
 
     private WishServiceImpl() { }
 

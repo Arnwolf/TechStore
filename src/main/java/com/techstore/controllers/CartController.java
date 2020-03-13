@@ -1,8 +1,10 @@
 package com.techstore.controllers;
 
 import com.techstore.components.ShoppingCart;
-import com.techstore.entities.Category;
-import com.techstore.services.category.CategoriesService;
+import com.techstore.dto.CategoryDto;
+import com.techstore.services.category.CategoryService;
+import com.techstore.services.category.CategoryServiceImpl;
+import com.techstore.services.product.ProductService;
 import com.techstore.services.product.ProductServiceImpl;
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -48,10 +50,10 @@ public class CartController extends BaseController {
     private void showCart() throws ServletException, IOException {
         ShoppingCart cart = new ShoppingCart(req.getSession());
 
-        ProductServiceImpl productServiceImpl = ProductServiceImpl.getInstance();
-        CategoriesService categoriesService = CategoriesService.getInstance();
+        ProductService productServiceImpl = ProductServiceImpl.getInstance();
+        CategoryService categoriesService = CategoryServiceImpl.getInstance();
 
-        List<Category> roots = categoriesService.getRootCategories();
+        List<CategoryDto> roots = categoriesService.getRootCategories();
         req.setAttribute("categories", roots);
         req.setAttribute("subCategories", categoriesService.getSubCategories(roots));
         req.setAttribute("products", productServiceImpl.findByIds(cart.getCart().keySet()));

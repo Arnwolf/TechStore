@@ -3,7 +3,6 @@ package com.techstore.services.review;
 import com.techstore.connection.ConnectionManager;
 import com.techstore.entities.Review;
 import javax.persistence.EntityManager;
-import java.util.List;
 
 
 class ReviewRepository {

@@ -1,6 +1,6 @@
 package com.techstore.rest;
 
-import com.techstore.services.category.CategoriesService;
+import com.techstore.services.category.CategoryServiceImpl;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -11,15 +11,19 @@ import javax.ws.rs.core.Response;
 
 @Path("/category")
 public class CategoriesController {
-    private CategoriesService categoriesService = CategoriesService.getInstance();
+    private CategoryServiceImpl categoriesService = CategoryServiceImpl.getInstance();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCategories() {
         try {
-            return Response.status(200).entity(categoriesService.getAllCategories()).build();
+            return Response.status(200)
+                    .entity(categoriesService.getRootCategories())
+                    .build();
         } catch (final RuntimeException exc) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(exc.toString()).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(exc.toString())
+                    .build();
         }
     }
 
@@ -28,9 +32,13 @@ public class CategoriesController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCategory(@PathParam("categoryID") String categoryID) {
         try {
-            return Response.status(200).entity(categoriesService.getSubCategories(Integer.parseInt(categoryID))).build();
+            return Response.status(200)
+                    .entity(categoriesService.getSubCategories(Integer.parseInt(categoryID)))
+                    .build();
         } catch (final RuntimeException exc) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(exc).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(exc)
+                    .build();
         }
     }
 }

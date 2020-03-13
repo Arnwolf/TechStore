@@ -31,7 +31,6 @@ public class ProfileController extends BaseController {
         updatedProfile.pass = req.getParameter("newpass") == null ? "" : req.getParameter("newpass");
 
 
-
         String error = "";
         UserService userService = UserServiceImpl.getInstance();
 

@@ -1,7 +1,8 @@
 package com.techstore.controllers;
 
-import com.techstore.entities.Category;
-import com.techstore.services.category.CategoriesService;
+import com.techstore.dto.CategoryDto;
+import com.techstore.services.category.CategoryService;
+import com.techstore.services.category.CategoryServiceImpl;
 import com.techstore.services.product.ProductService;
 import com.techstore.services.product.ProductServiceImpl;
 import com.techstore.services.subscription.SubscriptionService;
@@ -35,15 +36,15 @@ public class HomeController extends BaseController {
     }
 
     private void mainPage() throws ServletException, IOException {
-        CategoriesService categoriesService = CategoriesService.getInstance();
+        CategoryService categoriesService = CategoryServiceImpl.getInstance();
 
         try {
-            List<Category> roots = categoriesService.getRootCategories();
+            List<CategoryDto> roots = categoriesService.getRootCategories();
 
             req.setAttribute("categories", roots);
             req.setAttribute("subCategories", categoriesService.getSubCategories(roots));
 
-            ProductServiceImpl productServiceImpl = ProductServiceImpl.getInstance();
+            ProductService productServiceImpl = ProductServiceImpl.getInstance();
             req.setAttribute("products", productServiceImpl.productByCriteria(ProductService.ProductsCriteria.POPULAR));
         } catch (final RuntimeException exc) {
             exc.printStackTrace();

@@ -18,8 +18,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserValidationService validationService = UserValidationServiceImpl.getInstance();
 
-    private final static UserService instance = new UserServiceImpl();
-    public static UserService getInstance() { return instance; }
+    private final static UserServiceImpl instance = new UserServiceImpl();
+    public static UserServiceImpl getInstance() { return instance; }
 
     private UserServiceImpl() { }
 

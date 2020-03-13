@@ -8,8 +8,8 @@ import com.techstore.dto.CreateReviewDto;
 public class ReviewValidationServiceImpl implements ReviewValidationService {
     private Validator<CreateReviewDto> validator = new ReviewValidator();
 
-    private static ReviewValidationService validationService = new ReviewValidationServiceImpl();
-    public static ReviewValidationService getInstance() { return validationService;}
+    private static ReviewValidationServiceImpl validationService = new ReviewValidationServiceImpl();
+    public static ReviewValidationServiceImpl getInstance() { return validationService;}
 
     private ReviewValidationServiceImpl() { }
 

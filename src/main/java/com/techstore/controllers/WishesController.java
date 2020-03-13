@@ -1,9 +1,10 @@
 package com.techstore.controllers;
 
+import com.techstore.dto.CategoryDto;
 import com.techstore.dto.CreateWishDto;
 import com.techstore.dto.UserDto;
-import com.techstore.entities.Category;
-import com.techstore.services.category.CategoriesService;
+import com.techstore.services.category.CategoryService;
+import com.techstore.services.category.CategoryServiceImpl;
 import com.techstore.services.user.UserService;
 import com.techstore.services.wish.WishService;
 import com.techstore.services.wish.WishServiceImpl;
@@ -29,12 +30,12 @@ public class WishesController extends BaseController {
             removeWish(Integer.parseInt(wishId));
         else {
             WishService wishService = WishServiceImpl.getInstance();
-            CategoriesService categoriesService = CategoriesService.getInstance();
+            CategoryService categoriesService = CategoryServiceImpl.getInstance();
             UserService userService = UserServiceImpl.getInstance();
 
             final UserDto user = userService.getUserProfile(hashedUserId);
 
-            List<Category> roots = categoriesService.getRootCategories();
+            List<CategoryDto> roots = categoriesService.getRootCategories();
             req.setAttribute("categories", roots);
             req.setAttribute("subCategories", categoriesService.getSubCategories(roots));
             req.setAttribute("items", wishService.userWishes(user.id));
@@ -50,9 +51,6 @@ public class WishesController extends BaseController {
         CreateWishDto dto = new CreateWishDto();
         dto.productId = productId;
         dto.userId = user.id;
-
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~PRODUCT ID: " + productId);
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~USER ID: " + user.id);
 
         wishService.create(dto);
 

@@ -1,9 +1,10 @@
 package com.techstore.controllers;
 
 
+import com.techstore.dto.CategoryDto;
 import com.techstore.dto.CreateReviewDto;
-import com.techstore.entities.Category;
-import com.techstore.services.category.CategoriesService;
+import com.techstore.services.category.CategoryService;
+import com.techstore.services.category.CategoryServiceImpl;
 import com.techstore.services.product.ProductService;
 import com.techstore.services.product.ProductServiceImpl;
 import com.techstore.services.review.ReviewServiceImpl;
@@ -27,19 +28,10 @@ public class ProductController extends BaseController {
             showProduct();
     }
 
-    private Map<String, String> collectParameters() {
-        Map<String, String> params = new TreeMap<>();
-        params.put("ItemID",          req.getParameter("ItemID"));
-        params.put("categoryParamId", req.getParameter("categoryParamId"));
-        params.put("itemParamValue",  req.getParameter("itemParamValue"));
-
-        return params;
-    }
-
     private void showProduct() throws ServletException, IOException {
-        CategoriesService categoriesService = CategoriesService.getInstance();
+        CategoryService categoriesService = CategoryServiceImpl.getInstance();
         try {
-            final List<Category> roots = categoriesService.getRootCategories();
+            final List<CategoryDto> roots = categoriesService.getRootCategories();
             ProductService productService = ProductServiceImpl.getInstance();
 
             if (req.getParameter("ItemID") != null) {

@@ -6,30 +6,16 @@ import com.techstore.services.product.ProductDetailsService;
 import java.util.Map;
 
 
-public class OrdersService {
+public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository = new OrderRepository();
 
-    private static OrdersService instance = new OrdersService();
-    public static OrdersService getInstance() { return instance; }
+    private static OrderServiceImpl instance = new OrderServiceImpl();
+    public static OrderServiceImpl getInstance() { return instance; }
 
     private static OrderValidationService orderValidationService = OrderValidationServiceImpl.getInstance();
 
 
-    private OrdersService() { }
-
-    public enum OrderStatus {
-        PENDING(0);
-        private int code;
-
-        OrderStatus(final int statusCode) { code = statusCode; }
-
-        public String status() {
-            if (code == 0)
-                return "pending";
-            else
-                return "";
-        }
-    }
+    private OrderServiceImpl() { }
 
     public void createOrder(final CreateOrderDto order) {
         orderValidationService.validate(order);
