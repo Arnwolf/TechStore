@@ -4,7 +4,6 @@ package com.techstore.controllers;
 import com.techstore.components.ShoppingCart;
 import com.techstore.dto.CreateOrderDto;
 import com.techstore.dto.UserDto;
-import com.techstore.entities.Order;
 import com.techstore.services.order.OrdersService;
 import com.techstore.services.user.UserService;
 import com.techstore.services.user.UserServiceImpl;
