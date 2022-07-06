@@ -30,7 +30,7 @@
     <dependency>
       <groupId>org.mindrot</groupId>
       <artifactId>jbcrypt</artifactId>
-      <version>0.3m</version>
+      <version>0.4</version>
     </dependency>
 
     <!-- JavaServer Pages API 2.3 for tomcat 9 -->
